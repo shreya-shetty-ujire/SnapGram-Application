@@ -9,10 +9,10 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.example</groupId>
-	<artifactId>devgram-backend</artifactId>
+	<artifactId>snapgram-backend</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>devgram-backend</name>
-	<description>DevGram Application</description>
+	<name>snapgram-backend</name>
+	<description>SnapGram Application</description>
 	<url/>
 	<licenses>
 		<license/>
@@ -49,11 +49,11 @@
 			<version>42.7.4</version> <!-- Use the latest version if necessary -->
 		</dependency>
 
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-test</artifactId>
-			<scope>test</scope>
-		</dependency>
+<!--		<dependency>-->
+<!--			<groupId>org.springframework.boot</groupId>-->
+<!--			<artifactId>spring-boot-starter-test</artifactId>-->
+<!--			<scope>test</scope>-->
+<!--		</dependency>-->
 		<dependency>
 			<groupId>org.springframework.security</groupId>
 			<artifactId>spring-security-test</artifactId>

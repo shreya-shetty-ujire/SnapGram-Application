@@ -1,4 +1,4 @@
-package com.devgram.backend;
+package com.snapgram.backend;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
