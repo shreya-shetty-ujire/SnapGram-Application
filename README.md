@@ -41,13 +41,10 @@ git clone https://github.com/yourusername/snapgram.git
    - Configure the PostgreSQL connection by adding your credentials in application.properties:
 
 4. **application.properties** 
-  **PostgreSQL Database Configuration**
+   - **PostgreSQL Database Configuration**: Replace yourusername and yourpassword with your actual PostgreSQL credentials.
+     
     spring.datasource.url=                   # Database URL
     spring.datasource.username=yourusername  # Your PostgreSQL username
     spring.datasource.password=yourpassword  # Your PostgreSQL password
 
-  **JPA and Hibernate Configuration**
-    spring.jpa.hibernate.ddl-auto=update                                 # Auto schema generation (update schema if needed)
-    spring.jpa.database-platform=org.hibernate.dialect.PostgreSQLDialect # Dialect for PostgreSQL
-
-   - Replace yourusername and yourpassword with your actual PostgreSQL credentials.
+   
