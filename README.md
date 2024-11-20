@@ -29,7 +29,7 @@
 
 ### 1. Clone the Repository
 
-git clone https://github.com/yourusername/snapgram.git
+git clone https://github.com/shreya-shetty-ujire/SnapGram-Application.git
 
 ### 2. Database Setup
 
@@ -40,8 +40,8 @@ git clone https://github.com/yourusername/snapgram.git
 3. **Open the application.properties file** located in src/main/resources/ in your backend project.
    - Configure the PostgreSQL connection by adding your credentials in application.properties:
 
-   - **application.properties** 
-   - **PostgreSQL Database Configuration**: Replace yourusername and yourpassword with your actual PostgreSQL credentials.
+   **application.properties** 
+   - PostgreSQL Database Configuration: Replace yourusername and yourpassword with your actual PostgreSQL credentials.
      
       ```properties
       spring.datasource.url=jdbc:postgresql://localhost:5432/snapgram        # Database URL
