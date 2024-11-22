@@ -4,8 +4,10 @@ import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import jakarta.validation.constraints.*;
 
 @Entity
+@Table(name="app_user")
 public class User {
 
     @Id
@@ -13,17 +15,26 @@ public class User {
     @Column(name="user_id")
     private long userId;
 
-    @Column(name="user_name")
+    @Column(name="user_name", unique=true)
+    @NotNull(message = "Username cannot be null")
+    @Size(min = 3, max = 20, message = "Username must be between 3 and 20 characters")
     private String userName;
 
+    @NotNull(message = "First name cannot be null")
+    @Pattern(regexp="^[a-zA-Z ]+$", message="First name must must not contain special characters")
     @Column(name="first_name")
     private String firstName;
 
     @Column(name="last_name")
     private String lastName;
 
+    @NotNull(message = "Email cannot be null")
+    @Email(message = "Email should be valid")
     private String email;
 
+    @NotNull(message = "Password cannot be null")
+    @Size(min=8,message="Password must be at least 8 characters long")
+    @Pattern(regexp="(?=.*[A-Z])(?=.*\\d)[A-Za-z\\d!@#$%^&*]+")
     private String password;
 
     @Column(name="created_at")
@@ -35,7 +46,7 @@ public class User {
     @OneToMany(mappedBy="user",cascade = CascadeType.ALL)
     private List<Likes> likes;
 
-    @OneToMany(mappedBy = "followes", cascade=CascadeType.ALL)
+    @OneToMany(mappedBy = "follower", cascade=CascadeType.ALL)
     private List<Follows> followers;
 
     @OneToMany(mappedBy = "following", cascade = CascadeType.ALL)
@@ -97,5 +108,37 @@ public class User {
 
     public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
+    }
+
+    public List <Posts> getPosts() {
+        return posts;
+    }
+
+    public void setPosts(List <Posts> posts) {
+        this.posts = posts;
+    }
+
+    public List <Likes> getLikes() {
+        return likes;
+    }
+
+    public void setLikes(List <Likes> likes) {
+        this.likes = likes;
+    }
+
+    public List <Follows> getFollowers() {
+        return followers;
+    }
+
+    public void setFollowers(List <Follows> followers) {
+        this.followers = followers;
+    }
+
+    public List <Follows> getFollowing() {
+        return following;
+    }
+
+    public void setFollowing(List <Follows> following) {
+        this.following = following;
     }
 }

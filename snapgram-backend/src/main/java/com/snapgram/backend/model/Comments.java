@@ -1,6 +1,7 @@
 package com.snapgram.backend.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Size;
 
 import java.time.LocalDateTime;
 
@@ -21,6 +22,7 @@ public class Comments {
     private Posts post;
 
     @Column(name="comment_text")
+    @Size(max = 500, message = "Comments preview cannot exceed 500 characters")
     private String commentText;
 
     @Column(name="created_At")

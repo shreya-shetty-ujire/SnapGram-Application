@@ -16,8 +16,8 @@ public class Follows {
     private User following;
 
     @ManyToOne
-    @JoinColumn(name="followed_user_id",nullable=false)
-    private User followed;
+    @JoinColumn(name="follower_user_id",nullable=false)
+    private User follower;
 
     private LocalDateTime createdAt;
 
@@ -38,11 +38,11 @@ public class Follows {
     }
 
     public User getFollowed() {
-        return followed;
+        return follower;
     }
 
     public void setFollowed(User followed) {
-        this.followed = followed;
+        this.follower = followed;
     }
 
     public LocalDateTime getCreatedAt() {

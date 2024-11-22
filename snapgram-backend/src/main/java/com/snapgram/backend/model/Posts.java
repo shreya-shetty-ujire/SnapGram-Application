@@ -1,6 +1,8 @@
 package com.snapgram.backend.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.PositiveOrZero;
+import jakarta.validation.constraints.Size;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -16,10 +18,13 @@ public class Posts {
     @ManyToOne
     @JoinColumn(name="user_id",nullable=false)
     private User user;
+
+    @Size(max = 255, message = "Caption cannot exceed 255 characters")
     private String caption;
     private LocalDateTime createdAt;
 
     @OneToMany(mappedBy = "post",cascade= CascadeType.ALL)
+    @PositiveOrZero(message = "Likes count cannot be negative")
     private List <Likes> likes;
 
     @OneToMany(mappedBy = "post",cascade= CascadeType.ALL)
