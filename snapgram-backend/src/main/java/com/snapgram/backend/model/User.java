@@ -32,9 +32,7 @@ public class User {
     @Email(message = "Email should be valid")
     private String email;
 
-    @NotNull(message = "Password cannot be null")
-    @Size(min=8,message="Password must be at least 8 characters long")
-    @Pattern(regexp="(?=.*[A-Z])(?=.*\\d)[A-Za-z\\d!@#$%^&*]+")
+    @NotNull
     private String password;
 
     @Column(name="created_at")
