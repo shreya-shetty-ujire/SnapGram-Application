@@ -5,7 +5,7 @@ import java.util.List;
 import jakarta.validation.constraints.*;
 
 public class UserDto {
-
+    public class UserDTO {
         private long userId;
 
         @NotBlank(message = "Username cannot be blank")
@@ -108,4 +108,4 @@ public class UserDto {
         }
     }
 
-
+}
