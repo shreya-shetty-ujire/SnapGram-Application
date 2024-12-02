@@ -1,5 +1,6 @@
 package com.snapgram.backend.serviceImpl;
 
+import com.snapgram.backend.DTO.UserDto;
 import com.snapgram.backend.DTO.UserRequestDto;
 import com.snapgram.backend.DTO.UserUpdateDto;
 import com.snapgram.backend.exception.UserAlreadyExistsException;
@@ -7,6 +8,7 @@ import com.snapgram.backend.exception.UserNotFoundException;
 import com.snapgram.backend.model.User;
 import com.snapgram.backend.repository.UserRepository;
 import com.snapgram.backend.service.UserService;
+import com.snapgram.backend.utilities.UserDtoMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,8 +17,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -32,7 +36,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User saveUser(UserRequestDto userRequestDto) {
+    public void saveUser(UserRequestDto userRequestDto) {
         logger.info("Attempting to save user with username: {}", userRequestDto.getUsername());
         Optional<User> existingUser=userRepository.findByUserName(userRequestDto.getUsername());
         if(existingUser.isPresent()){
@@ -58,24 +62,27 @@ public class UserServiceImpl implements UserService {
 
         user.setCreatedAt(LocalDateTime.now());
         logger.info("Saving new user: {}", userRequestDto.getUsername());
-        return userRepository.save(user);
+        userRepository.save(user);
 
     }
 
     @Override
-    public List <User> getAllUsers() {
-        return List.of();
+    public List <UserDto> getAllUsers() {
+        List<User> users=userRepository.findAll();
+        return users.isEmpty()? new ArrayList <>()
+        :users.stream().map(UserDtoMapper::toUserDto).collect(Collectors.toList());
     }
 
     @Override
-    public Optional <User> getUserById(long userId) {
-        return Optional.empty();
+    public User getUserByUsername(String username) {
+        return userRepository.findByUserName(username)
+                .orElseThrow(() -> new UserNotFoundException("User not found"));
     }
 
     @Override
-    public User updateUser(Long userId, UserUpdateDto userUpdateDto) {
+    public void updateUser(Long userId, UserUpdateDto userUpdateDto) {
         logger.info("Attempting to update user: {}", userId);
-        return userRepository.findById(userId).map(existingUser->
+        userRepository.findById(userId).map(existingUser->
         {
             Optional.ofNullable(userUpdateDto.getUsername()).ifPresent(existingUser::setUserName);
             Optional.ofNullable(userUpdateDto.getFirstName()).ifPresent(existingUser::setFirstName);
@@ -93,7 +100,14 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Optional <User> deleteUser(User user) {
-        return Optional.empty();
+    public String deleteUser(Long userId) {
+        return userRepository.findById(userId).map(user->{
+            String username=user.getUserName();
+            userRepository.delete(user);
+            return username;
+                })
+                .orElseThrow(()->new UserNotFoundException("User Not Found"));
+
     }
 }
+
