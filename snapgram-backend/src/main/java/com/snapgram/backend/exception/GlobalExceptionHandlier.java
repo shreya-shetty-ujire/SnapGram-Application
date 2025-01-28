@@ -22,7 +22,7 @@ public class GlobalExceptionHandlier {
 
     private static final Logger logger = LoggerFactory.getLogger(UserService.class);
 
-    @ExceptionHandler({UserAlreadyExistsException.class, ConstraintViolationException.class})
+    @ExceptionHandler(UserAlreadyExistsException.class)
     public ResponseEntity<Map<String, String>> handleUserAlreadyExistsException(UserAlreadyExistsException ex){
         Map<String, String> errorResponse = new HashMap<>();
         errorResponse.put("message", ex.getMessage());
@@ -34,9 +34,8 @@ public class GlobalExceptionHandlier {
 
         Set <ConstraintViolation <?>> violations=ex.getConstraintViolations();
         violations.forEach(violation->{
-            String propertyName= violation.getPropertyPath().toString();
             String message=violation.getMessage();
-            errorResponse.put(propertyName,message);
+            errorResponse.put("message",message);
         });
         return new ResponseEntity <>(errorResponse,HttpStatus.BAD_REQUEST);
     }
