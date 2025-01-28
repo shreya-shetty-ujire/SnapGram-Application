@@ -24,9 +24,12 @@
 hs_err_pid*
 replay_pid*
 
-snapgram-frontend/node_modules/
-snapgram-frontend/dist/
-snapgram-frontend/build/
-snapgram-frontend/logs/
-snapgram-frontend/.env
-snapgram-frontend/*.log
+.angular/
+node_modules/
+vite/
+.tsbuildinfo
+.vscode/
+dist/
+build/
+.env
+*.log
