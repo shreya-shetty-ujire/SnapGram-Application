@@ -39,6 +39,9 @@ public class User {
     private LocalDateTime createdAt;
 
     @OneToMany(mappedBy="user",cascade =CascadeType.ALL)
+    private List <Comments> comments;
+
+    @OneToMany(mappedBy="user",cascade =CascadeType.ALL)
     private List <Posts> posts;
 
     @OneToMany(mappedBy="user",cascade = CascadeType.ALL)
@@ -139,4 +142,13 @@ public class User {
     public void setFollowing(List <Follows> following) {
         this.following = following;
     }
+
+    public void setComments(List <Comments> comments) {
+        this.comments = comments;
+    }
+
+    public List <Comments> getComments() {
+        return comments;
+    }
+
 }

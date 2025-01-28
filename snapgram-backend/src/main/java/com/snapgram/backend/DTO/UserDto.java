@@ -15,7 +15,7 @@ public class UserDto {
         @Pattern(regexp = "^[a-zA-Z ]+$", message = "First name must only contain letters and spaces")
         private String firstName;
 
-        @Pattern(regexp = "^[a-zA-Z ]+$", message = "Last name must only contain letters")
+//        @Pattern(regexp = "^[a-zA-Z ]+$", message = "Last name must only contain letters")
         private String lastName;
 
         @NotBlank(message = "Email cannot be blank")
