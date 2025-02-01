@@ -3,6 +3,10 @@
 
 **SnapGram** is a social media application, designed for photo sharing, user interactions, and social networking. Users can post images, like or comment on others' posts, follow other users.
 
+![Snapgram](snapgram-frontend/src/assets/images/name.png)
+<img src="snapgram-frontend/src/assets/images/image1.PNG" alt="Snapgram" width="300" height="auto" />
+
+
 ---
 
 ## Tech Stack
