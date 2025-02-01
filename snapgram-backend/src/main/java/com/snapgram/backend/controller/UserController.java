@@ -4,6 +4,7 @@ package com.snapgram.backend.controller;
 import com.snapgram.backend.DTO.UserDto;
 import com.snapgram.backend.DTO.UserRequestDto;
 import com.snapgram.backend.DTO.UserUpdateDto;
+import com.snapgram.backend.config.JwtUtil;
 import com.snapgram.backend.model.User;
 import com.snapgram.backend.service.UserService;
 import com.snapgram.backend.utilities.UserDtoMapper;
@@ -22,6 +23,8 @@ public class UserController {
     @Autowired
     UserService userService;
 
+
+
     @PostMapping("/signup")
     public ResponseEntity<String> createUser(@RequestBody @Valid UserRequestDto userRequestDto){
         userService.saveUser(userRequestDto);
@@ -35,12 +38,12 @@ public class UserController {
         return new ResponseEntity <>("User updated successfully",HttpStatus.OK);
     }
 
-    @GetMapping("/get/{username}")
-    public ResponseEntity<UserDto> getUser(@PathVariable String username){
-        User user=userService.getUserByUsername(username);
-        UserDto userDto= UserDtoMapper.toUserDto(user);
-        return new ResponseEntity <>(userDto,HttpStatus.OK);
-    }
+//    @GetMapping("/get/{username}")
+//    public ResponseEntity<UserDto> getUser(@PathVariable String username){
+//        User user=userService.getUserByUsername(username);
+//        UserDto userDto= UserDtoMapper.toUserDto(user);
+//        return new ResponseEntity <>(userDto,HttpStatus.OK);
+//    }
     @GetMapping("/getAll")
     public ResponseEntity<List<UserDto>> getAllUser(){
         List <UserDto> userDtoList=userService.getAllUsers();
@@ -51,5 +54,10 @@ public class UserController {
     public ResponseEntity<String> deleteUser(@PathVariable Long userId){
         userService.deleteUser(userId);
         return new ResponseEntity <>("User deleted successfully ",HttpStatus.OK);
+    }
+
+    @GetMapping("/protected")
+    public ResponseEntity<String> getProtectedData() {
+        return ResponseEntity.ok("You have accessed a protected resource!");
     }
 }

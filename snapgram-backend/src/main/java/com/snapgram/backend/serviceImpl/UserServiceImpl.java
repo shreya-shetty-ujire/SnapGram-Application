@@ -3,6 +3,7 @@ package com.snapgram.backend.serviceImpl;
 import com.snapgram.backend.DTO.UserDto;
 import com.snapgram.backend.DTO.UserRequestDto;
 import com.snapgram.backend.DTO.UserUpdateDto;
+import com.snapgram.backend.config.JwtUtil;
 import com.snapgram.backend.exception.UserAlreadyExistsException;
 import com.snapgram.backend.exception.UserNotFoundException;
 import com.snapgram.backend.model.User;
@@ -29,6 +30,9 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    JwtUtil jwtUtil;
 
     @Autowired
     public PasswordEncoder passwordEncoder() {
@@ -74,9 +78,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User getUserByUsername(String username) {
-        return userRepository.findByUserName(username)
-                .orElseThrow(() -> new UserNotFoundException("User not found"));
+    public Optional<User> getUserByUsername(String username) {
+        return userRepository.findByUserName(username);
     }
 
     @Override
@@ -109,5 +112,6 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(()->new UserNotFoundException("User Not Found"));
 
     }
+
 }
 
