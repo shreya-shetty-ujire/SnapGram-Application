@@ -18,14 +18,12 @@
 - **JWT (JSON Web Tokens)** for Authentication
 
 ### Frontend:
-- **Angular**: Version `18.2.12` (TypeScript, HTML, CSS)
-- **Bootstrap** for responsive design
+- **React.js**: Version `18.2.12` (TypeScript, HTML, CSS)
 
 ### Tools:
 - **Postman** for API testing
 - **Git** for version control
 - **Maven** for build automation
-- **Docker** for containerization
 
 ---
 
