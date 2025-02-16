@@ -18,7 +18,7 @@
 - **JWT (JSON Web Tokens)** for Authentication
 
 ### Frontend:
-- **React.js**: Version `18.2.12` (TypeScript, HTML, CSS)
+- **React.js**: Version `18.2.12` (JavaScript, HTML, CSS)
 
 ### Tools:
 - **Postman** for API testing
