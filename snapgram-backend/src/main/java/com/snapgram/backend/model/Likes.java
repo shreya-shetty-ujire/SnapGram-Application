@@ -18,7 +18,7 @@ public class Likes {
 
     @ManyToOne
     @JoinColumn(name="post_id",nullable=false)
-    private Posts post;
+    private Post post;
 
     private LocalDateTime createdAt;
 
@@ -30,11 +30,11 @@ public class Likes {
         this.likeId = likeId;
     }
 
-    public Posts getPost() {
+    public Post getPost() {
         return post;
     }
 
-    public void setPost(Posts post) {
+    public void setPost(Post post) {
         this.post = post;
     }
 

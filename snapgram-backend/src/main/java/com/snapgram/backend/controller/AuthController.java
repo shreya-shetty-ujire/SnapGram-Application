@@ -1,10 +1,10 @@
 package com.snapgram.backend.controller;
 
 import com.snapgram.backend.DTO.UserRequestDto;
-import com.snapgram.backend.config.JwtUtil;
 import com.snapgram.backend.model.User;
 import com.snapgram.backend.service.AuthService;
 import com.snapgram.backend.service.UserService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,13 +13,21 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 
-
-
 @RestController
 public class AuthController {
 
     @Autowired
     AuthService authService;
+
+    @Autowired
+    UserService userService;
+
+    @PostMapping("/signup")
+    public ResponseEntity<User> createUser(@RequestBody @Valid UserRequestDto userRequestDto){
+        User user= userService.saveUser(userRequestDto);
+        return new ResponseEntity<>(user, HttpStatus.CREATED); //201
+    }
+
 
     @PostMapping("/login")
     public ResponseEntity<String> login(@RequestBody UserRequestDto userRequestDto) {

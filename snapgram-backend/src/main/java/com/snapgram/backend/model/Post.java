@@ -1,40 +1,45 @@
 package com.snapgram.backend.model;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.PositiveOrZero;
 import jakarta.validation.constraints.Size;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity
-public class Posts {
+public class Post {
 
     @Id
-    @GeneratedValue(strategy= GenerationType.IDENTITY)
+    @GeneratedValue(strategy= GenerationType.AUTO)
     @Column(name="post_id")
-    private long postId;
+    private Integer postId;
+
+    private String image;
+
+    @Size(max = 255, message = "Caption cannot exceed 255 characters")
+    private String caption;
+
+    private LocalDateTime createdAt;
 
     @ManyToOne
     @JoinColumn(name="user_id",nullable=false)
     private User user;
 
-    @Size(max = 255, message = "Caption cannot exceed 255 characters")
-    private String caption;
-    private LocalDateTime createdAt;
+    @ManyToMany
+    private Set <User> likes=new HashSet <>();
 
     @OneToMany(mappedBy = "post",cascade= CascadeType.ALL)
-    @PositiveOrZero(message = "Likes count cannot be negative")
-    private List <Likes> likes;
+    private List<Comments> comments = new ArrayList <Comments>();
 
-    @OneToMany(mappedBy = "post",cascade= CascadeType.ALL)
-    private List<Comments> comments;
 
-    public long getPostId() {
+    public Integer getPostId() {
         return postId;
     }
 
-    public void setPostId(long post_id) {
+    public void setPostId(Integer post_id) {
         this.postId = post_id;
     }
 
@@ -62,11 +67,11 @@ public class Posts {
         this.createdAt = createdAt;
     }
 
-    public List <Likes> getLikes() {
+    public Set <User> getLikes() {
         return likes;
     }
 
-    public void setLikes(List <Likes> likes) {
+    public void setLikes(Set <User> likes) {
         this.likes = likes;
     }
 

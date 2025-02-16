@@ -5,12 +5,12 @@ import com.snapgram.backend.model.User;
 
 public class UserDtoMapper {
     public static UserDto toUserDto(User user) {
-        UserDto userDto = new UserDto();
+        UserDto userDto = new UserDto(user.getUserId(),user.getUsername(), user.getName(),user.getEmail(),
+                user.getUserImage());
         userDto.setUserId(user.getUserId());
-        userDto.setUserName(user.getUserName());
+        userDto.setUsername(user.getUsername());
         userDto.setEmail(user.getEmail());
-        userDto.setFirstName(user.getFirstName());
-        userDto.setLastName(user.getLastName());
+        userDto.setName(user.getName());
         return userDto;
     }
 }

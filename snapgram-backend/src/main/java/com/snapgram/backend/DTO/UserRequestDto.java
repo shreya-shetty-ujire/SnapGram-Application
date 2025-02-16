@@ -8,8 +8,7 @@ import jakarta.validation.constraints.Size;
 public class UserRequestDto {
     private String username;
     private String email;
-    private String firstName;
-    private String lastName;
+    private String name;
 
     @NotNull(message = "Password cannot be null")
     @Size(min=8,message="Password must be at least 8 characters long")
@@ -32,20 +31,12 @@ public class UserRequestDto {
         this.email = email;
     }
 
-    public String getFirstName() {
-        return firstName;
+    public String getName() {
+        return name;
     }
 
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
+    public void setName(String firstName) {
+        this.name = firstName;
     }
 
     public String getPassword() {
