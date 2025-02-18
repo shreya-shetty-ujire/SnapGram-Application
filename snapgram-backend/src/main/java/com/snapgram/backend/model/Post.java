@@ -1,5 +1,6 @@
 package com.snapgram.backend.model;
 
+import com.fasterxml.jackson.annotation.*;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Size;
 
@@ -10,6 +11,8 @@ import java.util.List;
 import java.util.Set;
 
 @Entity
+@Table(name="post")
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "postId")
 public class Post {
 
     @Id
@@ -29,7 +32,12 @@ public class Post {
     private User user;
 
     @ManyToMany
-    private Set <User> likes=new HashSet <>();
+    @JoinTable(
+            name = "post_likes",
+            joinColumns = @JoinColumn(name = "post_id"),
+            inverseJoinColumns = @JoinColumn(name = "user_id")
+    )
+    private Set<User> likes = new HashSet<>();
 
     @OneToMany(mappedBy = "post",cascade= CascadeType.ALL)
     private List<Comments> comments = new ArrayList <Comments>();
@@ -49,6 +57,14 @@ public class Post {
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
     }
 
     public String getCaption() {
@@ -84,6 +100,4 @@ public class Post {
     }
 
     // Relationship
-
-
 }

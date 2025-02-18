@@ -23,13 +23,6 @@ public class Comments {
     @JoinColumn(name="user_id",nullable=false)
     private User user;
 
-    public Post getPost() {
-        return post;
-    }
-
-    public void setPost(Post post) {
-        this.post = post;
-    }
 
     @ManyToMany
     private Set <User> likes=new HashSet <>();
@@ -49,13 +42,7 @@ public class Comments {
         this.likes = likes;
     }
 
-
-    public @Size(max = 500, message = "Comments preview cannot exceed 500 characters") String getContent() {
-        return content;
-    }
-
-    public void setContent(@Size(max = 500, message = "Comments preview cannot exceed 500 characters") String content) {
-        this.content = content;
+    public Comments() {
     }
 
     public Set <User> getLikes() {
@@ -82,6 +69,21 @@ public class Comments {
         this.user = user;
     }
 
+    public Post getPost() {
+        return post;
+    }
+
+    public void setPost(Post post) {
+        this.post = post;
+    }
+
+    public @Size(max = 500, message = "Comments preview cannot exceed 500 characters") String getContent() {
+        return content;
+    }
+
+    public void setContent(@Size(max = 500, message = "Comments preview cannot exceed 500 characters") String content) {
+        this.content = content;
+    }
 
     public LocalDateTime getCreatedAt() {
         return createdAt;

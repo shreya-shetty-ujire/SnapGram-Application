@@ -6,6 +6,7 @@ import com.snapgram.backend.service.AuthService;
 import com.snapgram.backend.service.UserService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -32,6 +33,11 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<String> login(@RequestBody UserRequestDto userRequestDto) {
         String jwtToken=authService.authenticateUser(userRequestDto);
-        return new ResponseEntity <>(jwtToken, HttpStatus.OK);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Authorization", jwtToken);
+
+        // Return the response with the Authorization header set
+        return new ResponseEntity<>(null, headers, HttpStatus.OK);
     }
 }

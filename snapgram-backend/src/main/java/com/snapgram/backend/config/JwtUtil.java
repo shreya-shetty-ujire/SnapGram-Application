@@ -45,6 +45,7 @@ public class JwtUtil {
                 .signWith(getKey())
                 .compact();
     }
+
     public SecretKey getKey(){
         byte[] keyBytes= Decoders.BASE64.decode(SECRET_KEY);
         return Keys.hmacShaKeyFor(keyBytes);
@@ -78,4 +79,16 @@ public class JwtUtil {
     private Date extractExpiration(String token) {
         return extractClaim(token, Claims::getExpiration);
     }
+
+//    public JwtTokenizer getClaimsFromToken(String token){
+//        SecretKey key=Keys.hmacShaKeyFor(SECRET_KEY.getBytes());
+//        Claims claims=Jwts.parser()
+//                .verifyWith(key)
+//                .build()
+//                .parseSignedClaims(token)
+//                .getPayload();
+//        String username=String.valueOf(claims.get("username"));
+//        JwtTokenizer jwtuy=new JwtTokenizer();
+//        jwtuy.setUsername
+//    }
 }

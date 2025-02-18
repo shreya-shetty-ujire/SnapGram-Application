@@ -2,13 +2,12 @@ package com.snapgram.backend.service;
 
 
 
+import com.snapgram.backend.DTO.UserDto;
 import com.snapgram.backend.DTO.UserRequestDto;
-import com.snapgram.backend.DTO.UserUpdateDto;
 import com.snapgram.backend.exception.UserNotFoundException;
 import com.snapgram.backend.model.User;
 
 import java.util.List;
-import java.util.Optional;
 
 
 public interface UserService {
@@ -23,5 +22,5 @@ public interface UserService {
     // Search users takes email, usernames or full names
     List<User> searchUsers(String query);
 
-    User updateUser(Integer userId, UserUpdateDto existingUser);
+    User updateUser(Integer userId, UserDto existingUser);
 }

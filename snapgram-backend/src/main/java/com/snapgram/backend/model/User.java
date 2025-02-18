@@ -1,6 +1,7 @@
 package com.snapgram.backend.model;
 
 
+import com.fasterxml.jackson.annotation.*;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
@@ -13,6 +14,7 @@ import jakarta.validation.constraints.*;
 
 @Entity
 @Table(name = "app_user")
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "userId")
 public class User {
 
     @Id
@@ -20,14 +22,13 @@ public class User {
     @Column(name = "user_id")
     private Integer userId;
 
-    @Column(name = "user_name", unique = true)
+
     @NotNull(message = "Username cannot be null")
     @Size(min = 3, max = 20, message = "Username must be between 3 and 20 characters")
     private String username;
 
-    @NotNull(message = "First name cannot be null")
+    @NotNull(message = "Name cannot be null")
     @Pattern(regexp = "^[a-zA-Z ]+$", message = "First name must must not contain special characters")
-    @Column(name = "first_name")
     private String name;
 
     @NotNull(message = "Email cannot be null")
@@ -64,11 +65,13 @@ public class User {
     )
     private Set <User> following = new HashSet <>();
 
-    @ManyToMany //Many posts can be saved by multiple users
-    private List <Post> savedPosts = new ArrayList <>();
-
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    private List <Comments> comments;
+    @ManyToMany
+    @JoinTable(
+            name = "saved_posts",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "post_id")
+    )
+    private List<Post> savedPosts = new ArrayList<>();
 
 
     public String getPhoneNumber() {
@@ -107,6 +110,14 @@ public class User {
         return email;
     }
 
+    public List <Post> getSavedPosts() {
+        return savedPosts;
+    }
+
+    public void setSavedPosts(List <Post> savedPosts) {
+        this.savedPosts = savedPosts;
+    }
+
     public void setEmail(String email) {
         this.email = email;
     }
@@ -116,8 +127,8 @@ public class User {
         return name;
     }
 
-    public void setName(String firstName) {
-        this.name = firstName;
+    public void setName(String name) {
+        this.name = name;
     }
 
 
@@ -129,7 +140,7 @@ public class User {
         return userId;
     }
 
-    public void setUsername(String userName) {
+    public void setUsername(String username) {
         this.username = username;
     }
 
@@ -153,14 +164,6 @@ public class User {
         this.createdAt = createdAt;
     }
 
-    public List <Post> getPosts() {
-        return savedPosts;
-    }
-
-    public void setPosts(List <Post> posts) {
-        this.savedPosts = posts;
-    }
-
     public Set <User> getFollowers() {
         return followers;
     }
@@ -177,12 +180,5 @@ public class User {
         this.following = following;
     }
 
-    public void setComments(List <Comments> comments) {
-        this.comments = comments;
-    }
-
-    public List <Comments> getComments() {
-        return comments;
-    }
 
 }

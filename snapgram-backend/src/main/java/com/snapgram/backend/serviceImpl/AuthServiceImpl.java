@@ -1,5 +1,6 @@
 package com.snapgram.backend.serviceImpl;
 
+
 import com.snapgram.backend.DTO.UserRequestDto;
 import com.snapgram.backend.config.JwtUtil;
 import com.snapgram.backend.exception.AuthenticationException;
@@ -36,10 +37,6 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public String authenticateUser(UserRequestDto userRequestDto)  throws AuthenticationException {
         User user= userService.findUserByUsername(userRequestDto.getUsername());
-        if(user==null) {
-            throw new InvalidCredentialException("Invalid username or password. Please check " +
-                    "your credentials !");
-        }
 
         if(passwordMatches(userRequestDto.getPassword(), user.getPassword())){
             return jwtUtil.generateToken(user.getUsername());

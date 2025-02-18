@@ -1,14 +1,16 @@
 package com.snapgram.backend.serviceImpl;
 
 
+import com.snapgram.backend.DTO.UserDto;
 import com.snapgram.backend.DTO.UserRequestDto;
-import com.snapgram.backend.DTO.UserUpdateDto;
+import com.snapgram.backend.config.JwtUtil;
 import com.snapgram.backend.exception.UserAlreadyExistsException;
 import com.snapgram.backend.exception.UserException;
 import com.snapgram.backend.exception.UserNotFoundException;
 import com.snapgram.backend.model.User;
 import com.snapgram.backend.repository.UserRepository;
 import com.snapgram.backend.service.UserService;
+import jakarta.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,14 +30,17 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    JwtUtil jwtUtil;
+
 
     @Autowired
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
-
+    @Transactional
     @Override
-    public User saveUser(UserRequestDto userRequestDto) {
+    public User saveUser(UserRequestDto userRequestDto){
         logger.info("Attempting to save user with username: {}", userRequestDto.getUsername());
         Optional <User> existingUser = userRepository.findByUsername(userRequestDto.getUsername());
         if (existingUser.isPresent()) {
@@ -48,9 +53,6 @@ public class UserServiceImpl implements UserService {
             logger.warn("Email already registered: {}", userRequestDto.getEmail());
             throw new UserAlreadyExistsException("Email is already registered");
         }
-        if (userRequestDto.getEmail() == null || userRequestDto.getUsername() == null || userRequestDto.getPassword() == null || userRequestDto.getName() == null) {
-            throw new UserException("Fields should not be null");
-        }
         User user = new User();
         user.setUsername(userRequestDto.getUsername());
         user.setEmail(userRequestDto.getEmail());
@@ -62,8 +64,7 @@ public class UserServiceImpl implements UserService {
 
         user.setCreatedAt(LocalDateTime.now());
         logger.info("Saving new user: {}", userRequestDto.getUsername());
-        userRepository.save(user);
-        return user;
+        return userRepository.save(user);
     }
 
 
@@ -77,8 +78,9 @@ public class UserServiceImpl implements UserService {
     public String followUser(Integer reqUserId, Integer followUserId) {
 
         User reqUser = findUserById(reqUserId);
-        User followUser = findUserById(reqUserId);
+        User followUser = findUserById(followUserId);
         logger.info("Attempting to follow {}", followUser.getUsername());
+
 
         reqUser.getFollowing().add(followUser);
         followUser.getFollowers().add(reqUser);
@@ -93,20 +95,20 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public String unFollowUser(Integer reqUserId, Integer followUserId) {
+    public String unFollowUser(Integer reqUserId, Integer unfollowUserId) {
         User reqUser = findUserById(reqUserId);
-        User followUser = findUserById(reqUserId);
+        User unfollowUser = findUserById(unfollowUserId);
 
-        logger.info("Attempting to unfollow {}", followUser.getUsername());
+        logger.info("Attempting to unfollow {}", unfollowUser.getUsername());
 
-        followUser.getFollowers().remove(reqUser);
-        reqUser.getFollowing().remove(followUser);
+        unfollowUser.getFollowers().remove(reqUser);
+        reqUser.getFollowing().remove(unfollowUser);
 
         userRepository.save(reqUser);
-        userRepository.save(followUser);
+        userRepository.save(unfollowUser);
 
-        logger.info("User unfollowed {}", followUser.getUsername());
-        return "You have successfully unfollowed " + followUser.getUsername();
+        logger.info("User unfollowed {}", unfollowUser.getUsername());
+        return "You have successfully unfollowed " + unfollowUser.getUsername();
     }
 
     @Override
@@ -126,7 +128,10 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User findUserProfile(String token) throws UserNotFoundException {
-        return null;
+        token=token.substring(7); //Bearer
+        String username = jwtUtil.extractUsername(token);
+        return userRepository.findByUsername(username).orElseThrow(()->new UserNotFoundException("User with " +
+                "username "+ username+" not found"));
     }
 
     @Override
@@ -135,8 +140,9 @@ public class UserServiceImpl implements UserService {
         return userRepository.findByUsername(username)
                 .orElseThrow(()->{
                     logger.error("User not found with username: {}", username);
-                    throw new UserNotFoundException("User not found with username: " + username);
+                    return new UserNotFoundException("User not found with username: " + username);
                 });
+
     }
 
     @Override
@@ -151,16 +157,17 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User updateUser(Integer userId, UserUpdateDto userUpdateDto) {
+    public User updateUser(Integer userId, UserDto userDto) {
         logger.info("Attempting to update user: {}", userId);
         return userRepository.findById(userId).map(existingUser ->
         {
-            Optional.ofNullable(userUpdateDto.getUsername()).ifPresent(existingUser::setUsername);
-            Optional.ofNullable(userUpdateDto.getName()).ifPresent(existingUser::setName);
-            Optional.ofNullable(userUpdateDto.getEmail()).ifPresent(existingUser::setEmail);
-            Optional.ofNullable(userUpdateDto.getGender()).ifPresent(existingUser::setGender);
-            Optional.ofNullable(userUpdateDto.getUserImage()).ifPresent(existingUser::setUserImage);
-            Optional.ofNullable(userUpdateDto.getBio()).ifPresent(existingUser::setBio);
+            Optional.ofNullable(userDto.getUsername()).ifPresent(existingUser::setUsername);
+            Optional.ofNullable(userDto.getName()).ifPresent(existingUser::setName);
+            Optional.ofNullable(userDto.getEmail()).ifPresent(existingUser::setEmail);
+            Optional.ofNullable(userDto.getGender()).ifPresent(existingUser::setGender);
+            Optional.ofNullable(userDto.getUserImage()).ifPresent(existingUser::setUserImage);
+            Optional.ofNullable(userDto.getBio()).ifPresent(existingUser::setBio);
+            Optional.ofNullable(userDto.getPhoneNumber()).ifPresent(existingUser::setBio);
             User updatedUser = userRepository.save(existingUser);
             logger.info("User updated successfully with ID: {}", updatedUser.getUsername());
             return updatedUser;

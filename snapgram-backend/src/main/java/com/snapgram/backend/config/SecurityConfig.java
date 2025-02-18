@@ -8,6 +8,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
@@ -28,7 +29,7 @@ public class SecurityConfig implements WebMvcConfigurer {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         // AddingJWT filter to vaildate
-        return http.csrf(csrf->csrf.disable())
+        return http.csrf(AbstractHttpConfigurer::disable)
                 .addFilterBefore(jwtAuthenticationFilter, BasicAuthenticationFilter.class)
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/signup","/login").permitAll()
@@ -45,10 +46,11 @@ public class SecurityConfig implements WebMvcConfigurer {
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
                 .allowedOrigins("http://localhost:3000")  // React's frontend URL
-                .allowedMethods("GET", "POST", "PUT", "DELETE")  // Specify the allowed HTTP methods
-                .allowCredentials(true)
-                .exposedHeaders("Authorization");
-
+                .allowedMethods("GET", "POST", "PUT", "DELETE")
+                .allowedHeaders("Authorization", "Content-Type")  // Make sure to allow Authorization header
+                .exposedHeaders("Authorization")  // Expose Authorization header to the client
+                .allowCredentials(true);  // Allow credentials if needed (cookies, etc.)
     }
+
 
 }

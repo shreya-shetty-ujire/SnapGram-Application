@@ -1,10 +1,6 @@
 package com.snapgram.backend.exception;
 
 import com.snapgram.backend.service.UserService;
-import io.jsonwebtoken.ExpiredJwtException;
-import io.jsonwebtoken.JwtException;
-import io.jsonwebtoken.security.SignatureException;
-import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,11 +14,9 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.context.request.WebRequest;
 
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
@@ -44,15 +38,25 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(ConstraintViolationException.class)
-    public ResponseEntity<Map<String, String>> handleConstraintViolationException(ConstraintViolationException ex){
+    public ResponseEntity<ErrorDetails> handleConstraintViolationException(ConstraintViolationException ex,  WebRequest request){
 
-        Set <ConstraintViolation <?>> violations=ex.getConstraintViolations();
-        violations.forEach(violation->{
-            String message=violation.getMessage();
-            errorResponse.put("message",message);
-        });
-        return new ResponseEntity <>(errorResponse,HttpStatus.BAD_REQUEST);
+        StringBuilder errorMessage = new StringBuilder();
+
+        // Collect all constraint violation messages
+        ex.getConstraintViolations().forEach(violation ->
+                errorMessage.append(violation.getMessage()).append("; ")
+        );
+
+        ErrorDetails errorDetails = new ErrorDetails(
+                errorMessage.toString(),
+                request.getDescription(false),
+                LocalDateTime.now()
+        );
+
+        return new ResponseEntity<>(errorDetails, HttpStatus.BAD_REQUEST);
     }
+
+
 
     @ExceptionHandler(UserNotFoundException.class)
     public ResponseEntity<ErrorDetails> handleUserNotFoundException(UserNotFoundException ex, WebRequest request){
@@ -99,6 +103,18 @@ public class GlobalExceptionHandler {
     }
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorDetails> handleJAuthenticationException(Exception ex, WebRequest request) {
+        ErrorDetails error=new ErrorDetails(ex.getMessage(),request.getDescription(false), LocalDateTime.now());
+        return new ResponseEntity <ErrorDetails>(error,HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(PostException.class)
+    public ResponseEntity<ErrorDetails> handlePostException(PostException ex, WebRequest request) {
+        ErrorDetails error=new ErrorDetails(ex.getMessage(),request.getDescription(false), LocalDateTime.now());
+        return new ResponseEntity <ErrorDetails>(error,HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(CommentException.class)
+    public ResponseEntity<ErrorDetails> handleCommentException(CommentException ex, WebRequest request) {
         ErrorDetails error=new ErrorDetails(ex.getMessage(),request.getDescription(false), LocalDateTime.now());
         return new ResponseEntity <ErrorDetails>(error,HttpStatus.BAD_REQUEST);
     }
