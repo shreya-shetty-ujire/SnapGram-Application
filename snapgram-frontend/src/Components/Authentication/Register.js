@@ -12,8 +12,7 @@ const Register = () => {
   const [successMessage,setSuccessMessage] = useState('');
   const [formData, setFormData] = useState({
     username: '',
-    firstName: '',
-    lastName: '',
+    name: '',
     email: '',
     password: ''
   });
@@ -51,10 +50,10 @@ const Register = () => {
       formErrors.email = 'Email is invalid';
     }
 
-    //First Name validation
-    if (!formData.firstName) {
+    // Name validation
+    if (!formData.name) {
       formIsValid = false;
-      formErrors.firstName = 'First Name is required';
+      formErrors.name = 'Name is required';
     }
 
     //password validation
@@ -79,7 +78,7 @@ const Register = () => {
     setIsSubmitted(true);
     if (validateForm()) {
       try {
-        const response = await api.post('users/signup', formData);
+        const response = await api.post('signup', formData);
         console.log('User registered:', response.data);
         setSuccessMessage('Registration successful! You can now log in.');
 
@@ -90,8 +89,7 @@ const Register = () => {
 
         setFormData({
           username: '',
-          firstName: '',
-          lastName: '',
+          name: '',
           email: '',
           password: ''
         });
@@ -157,28 +155,16 @@ const Register = () => {
 
             <input
               type="text"
-              name="firstName"
+              name="name"
               className="input-field"
               placeholder=" "
-              value={formData.firstName}
+              value={formData.name}
               onChange={handleInputChange}
             />
-            <label htmlFor="FirstName" className="input-label">First Name</label>
-            {isSubmitted && errors.fieldErrors?.firstName && <span className="text-red-500 text-xs">{errors.fieldErrors.firstName}</span>}
+            <label htmlFor="name" className="input-label">Name</label>
+            {isSubmitted && errors.fieldErrors?.name && <span className="text-red-500 text-xs">{errors.fieldErrors.name}</span>}
           </div>
 
-          <div className='input-container'>
-
-            <input
-              type="text"
-              name="lastName"
-              className="input-field"
-              placeholder=" "
-              value={formData.lastName}
-              onChange={handleInputChange}
-            />
-            <label htmlFor="LastName" className="input-label">Last Name</label>
-          </div>
           <div className='input-container'>
 
             <input
@@ -191,6 +177,11 @@ const Register = () => {
             />
             <label htmlFor="Password" className="input-label">Password</label>
             {isSubmitted && errors.fieldErrors?.password && <span className="text-red-500 text-xs">{errors.fieldErrors.password}</span>}
+          </div>
+
+          <div>
+            <p>Female</p>
+            <p>Male</p>
           </div>
           {/* server error */}
           {errors.serverError && (

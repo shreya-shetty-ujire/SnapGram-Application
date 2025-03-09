@@ -1,0 +1,23 @@
+.comment{
+    max-height: 40vh;
+    overflow-y: auto;
+}
+
+
+.commentInput{
+    border: none;
+    outline: none;
+}
+.comment::-webkit-scrollbar {
+    width: 0; /* Hides the scrollbar */
+    height: 0;
+  }
+  
+  .comment::-webkit-scrollbar-thumb {
+    background-color: transparent; /* Keeps the scrollbar thumb invisible */
+  }
+
+  
+  .chakra-modal__body {
+    padding: 0 !important;  /* Removes padding inside the body of the modal */
+  }

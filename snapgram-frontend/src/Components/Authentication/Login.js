@@ -1,17 +1,20 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, {  useState } from 'react';
 import logoImage from '../../assets/images/image1.PNG';
 import nameImage from '../../assets/images/name.png';
 import api from '../../utils/axios';
 import { handleApiErrors } from '../../utils/errorHandler';
-import './login.css';
+import './Login.css';
+import { useNavigate } from 'react-router-dom';
 
 const Login = () => {
+    const navigate = useNavigate();
     const [formData, setFormData] = useState({
         username: '',
         password: ''
     });
 
     const [isSubmitted, setIsSubmitted] = useState(false);
+    const [passwordVisible, setpasswordVisible]=useState(false);
     const handleInputChange = (e) => {
         const { name, value } = e.target;
         setFormData({
@@ -24,7 +27,7 @@ const Login = () => {
         fieldErrors: {},  // Initialize with empty object
         serverError: ''
     });
-
+    
     const validateForm = () => {
         let formErrors = {};
         let formIsValid = true;
@@ -38,9 +41,6 @@ const Login = () => {
         if (!formData.password) {
             formIsValid = false;
             formErrors.password = 'Password is required';
-        } else if (formData.password.length < 8) {
-            formIsValid = false;
-            formErrors.password = "Password should be atleast 8 characters";
         }
         setErrors((prevErrors) => ({
             ...prevErrors,
@@ -54,13 +54,27 @@ const Login = () => {
         setIsSubmitted(true);
         if (validateForm()) {
             try {
-                const response = await api.post('users/get', formData);
-                
+                const response = await api.post('login', {
+                    username: formData.username,
+                    password : formData.password
+                });
+
+                //backend sends the token if successful
+                if(response.status === 200){
+                    const jwtToken = response.data;
+                    
+                    localStorage.setItem('jwtToken', jwtToken);
+
+                    navigate('/dashboard');
+                }
+                 
+    
                 setFormData({
                     username: '',
                     password: ''
                 });
                 setErrors({ fieldErrors: {}, serverError: '' });
+                
 
             } catch (error) {
 
@@ -99,7 +113,7 @@ const Login = () => {
                         <div className='input-container'>
 
                             <input
-                                type="text"
+                                type={passwordVisible ? "text" : "password"}
                                 name="password"
                                 className="input-field"
                                 placeholder=" "
@@ -108,6 +122,11 @@ const Login = () => {
                             />
                             <label htmlFor="Password" className="input-label">Password</label>
                             {isSubmitted && errors.fieldErrors?.password && <span className="text-red-500 text-xs">{errors.fieldErrors.password}</span>}
+                            <button
+                                type="button" className="absolute right-5 text-blue-500 top-2 transform focus:outline-none" 
+                                onClick={() => setpasswordVisible(!passwordVisible)}>
+                                {passwordVisible ? 'Hide':'Show'}
+                            </button>
                         </div>
                         {/* server error */}
                         {errors.serverError && (
