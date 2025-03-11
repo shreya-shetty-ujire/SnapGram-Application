@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 public class CommentServiceImpl implements CommentService {
@@ -45,6 +46,19 @@ public class CommentServiceImpl implements CommentService {
         post.getComments().add(saveComment);
         postRepository.save(post);
         return saveComment;
+    }
+
+    @Override
+    public List<Comments> findCommentsByPostId(Integer postId) throws CommentException, PostException {
+        Post post=postService.getPostById(postId);
+        List <Comments> comments = commentsRepository.findByPost(post);
+
+        // If no comments found, throw an exception
+        if (comments.isEmpty()) {
+            throw new CommentException("No comments found for this post!");
+        }
+
+        return comments;
     }
 
     @Override

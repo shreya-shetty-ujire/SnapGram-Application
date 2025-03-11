@@ -12,6 +12,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/comments")
 public class CommentController {
@@ -29,6 +31,13 @@ public class CommentController {
         User user= userService.findUserProfile(token);
         Comments createdComment=commentService.createComment(comment,postId, user.getUserId());
         return new ResponseEntity <>(createdComment, HttpStatus.CREATED);
+    }
+
+    @GetMapping("/{postId}")
+    public ResponseEntity <List<Comments>> createCommentHandler(@PathVariable("postId") Integer postId,
+                                                          @RequestHeader("Authorization") String token ) throws CommentException {
+        List <Comments > comments= commentService.findCommentsByPostId(postId);
+        return new ResponseEntity <>(comments, HttpStatus.OK);
     }
 
     @PutMapping("/like/{commentId}")
