@@ -1,6 +1,10 @@
-import React, {  useState } from 'react';
+import React, {  useState, useEffect } from 'react';
 import logoImage from '../../assets/images/image1.PNG';
 import nameImage from '../../assets/images/name.png';
+import { useDispatch , useSelector} from 'react-redux';  // Import useDispatch from react-redux
+import { loginUser } from '../../Components/Redux/User/userActions';
+
+
 import api from '../../utils/axios';
 import { handleApiErrors } from '../../utils/errorHandler';
 import './Login.css';
@@ -8,6 +12,7 @@ import { useNavigate } from 'react-router-dom';
 
 const Login = () => {
     const navigate = useNavigate();
+    const dispatch = useDispatch(); 
     const [formData, setFormData] = useState({
         username: '',
         password: ''
@@ -15,6 +20,16 @@ const Login = () => {
 
     const [isSubmitted, setIsSubmitted] = useState(false);
     const [passwordVisible, setpasswordVisible]=useState(false);
+    const currentUser = useSelector(state => state.user);
+
+    useEffect(() => {
+        // If user is already logged in, redirect to the dashboard
+        if (currentUser?.username) {
+          navigate('/dashboard');
+        }
+      }, [currentUser, navigate]);
+
+      
     const handleInputChange = (e) => {
         const { name, value } = e.target;
         setFormData({
@@ -62,7 +77,7 @@ const Login = () => {
                 //backend sends the token if successful
                 if(response.status === 200){
                     const jwtToken = response.data;
-                    
+                    dispatch(loginUser({ username: formData.username, token: jwtToken }));
                     localStorage.setItem('jwtToken', jwtToken);
 
                     navigate('/dashboard');

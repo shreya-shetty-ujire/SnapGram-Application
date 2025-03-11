@@ -2,14 +2,33 @@ import React, { useEffect, useMemo, useState } from 'react';
 import api from '../../utils/axios';
 import { handleApiErrors } from '../../utils/errorHandler';
 import './Register.css';
+import { useDispatch, useSelector } from 'react-redux';
+import { registerUser } from '../../Components/Redux/User/userActions';
 import logoImage from '../../assets/images/image1.PNG';
 import nameImage from '../../assets/images/name.png';
 import {useNavigate} from 'react-router-dom';
+import { useToast } from '@chakra-ui/react';
 
 
 const Register = () => {
   const navigate= useNavigate();
+  const dispatch = useDispatch();
+  const toast= useToast()
   const [successMessage,setSuccessMessage] = useState('');
+  const user = useSelector((state) => state);
+  
+      useEffect(() => {
+          if (user?.username) {
+            navigate('/login');
+            toast({
+              title:`Account created. ${user?.username}`,
+              status:'success',
+              duration: 5000,
+              isClosable: true,
+            })
+          }
+        }, [user.username]);
+
   const [formData, setFormData] = useState({
     username: '',
     name: '',
@@ -80,12 +99,13 @@ const Register = () => {
       try {
         const response = await api.post('signup', formData);
         console.log('User registered:', response.data);
+        dispatch(registerUser({ username: formData.username, name: formData.name }));
         setSuccessMessage('Registration successful! You can now log in.');
 
-        //Redirect to login page after successful registeration
-        setTimeout(() => {
-          navigate('/login');
-        }, 3000);
+        // //Redirect to login page after successful registeration
+        // setTimeout(() => {
+        //   navigate('/login');
+        // }, 3000);
 
         setFormData({
           username: '',
