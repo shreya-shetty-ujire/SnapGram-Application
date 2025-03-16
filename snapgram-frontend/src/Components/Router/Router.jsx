@@ -1,17 +1,17 @@
 import React, { useState } from 'react';
 import { Routes, Route, useLocation } from 'react-router-dom';
 import Sidebar from '../Sidebar/Sidebar';
-import Register from '../Authentication/Register';
-import Login from '../Authentication/Login';
 import Dashboard from '../dashboard/Dashboard';
 import Profile from '../Profile/Profile';
+import Auth from '../../Pages/Auth/Auth';
+
 
 const Router = () => {
 
     const  location  = useLocation();
     return (
         <div>
-            {(location.pathname !== "/login" && location.pathname !== "/register")  && (
+            {(location.pathname !== "/login" && location.pathname !== "/signup")  && (
                 <div className='flex'>
                     <div className='w-[20%]'>
                         <Sidebar />
@@ -24,12 +24,17 @@ const Router = () => {
                         </Routes>
                     </div>
                 </div>
-            )}:{(location.pathname === "/login" || location.pathname === "/register") && (
+            )}:{(location.pathname === "/login" || location.pathname === "/signup") && (
                 <div>
-                    <Routes>
-                        <Route path="/" element={<Register />} />  {/* For '/' path */}
+                    {/* <Routes>
+                        <Route path="/" element={<Register />} /> 
                         <Route path="/register" element={<Register />} />
                         <Route path="/login" element={<Login />} />
+                    </Routes> */}
+                    <Routes>
+                        <Route path="/" element={<Auth />} /> 
+                        <Route path="/signup" element={<Auth />} />
+                        <Route path="/login" element={<Auth />} />
                     </Routes>
                     
                 </div>

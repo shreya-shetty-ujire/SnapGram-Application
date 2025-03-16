@@ -1,21 +1,25 @@
-import { FOLLOW_USER, GET_USER_BY_USERNAME, GET_USERS_BY_USER_IDS, SEARCH_USER, UNFOLLOW_USER, UPDATE_USER } from "./ActionType";
+import { FOLLOW_USER, GET_USER_BY_USERNAME, GET_USERS_BY_USER_IDS, REQ_USER, SEARCH_USER, UNFOLLOW_USER, UPDATE_USER } from "./ActionType";
 
 const BASE_API = "http://localhost:8080"
 
-export const loginUser = (userData) => {
-  return {
-    type: 'LOGIN_USER',
-    payload: userData
-  };
-};
+export const getUserProfileAction = (jwt) => async (dispatch) => {
+  
+  try {
+    const res = await fetch(`${BASE_API}/user/reqProfile`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Bearer "+jwt
+      }
+    })
 
-export const registerUser = (userData) => {
-  return {
-    type: 'REGISTER_USER',
-    payload: userData
-  };
-};
-
+    const reqUser = await res.json();
+    console.log("Response from profile API:", reqUser);
+    dispatch({ type: REQ_USER, payload: reqUser });
+  } catch(error){
+    console.log("Catch error", error)
+  }
+}
 
 export const findUserByUsernameAction = (data) => async (dispatch) => {
 

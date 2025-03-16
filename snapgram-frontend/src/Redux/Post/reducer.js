@@ -5,7 +5,7 @@ import { CREATE_NEW_POST, DELETE_POST, GET_SINGLE_POST, GET_USER_POST, LIKE_POST
 const initialValue = {
     createdPost: null,
     usersPost: [],
-    deletePost: null,
+    deletedPost: null,
     likePost: null,
     unlikePost: null,
     savedPost: null,
@@ -23,7 +23,7 @@ export const PostReducer = (store = initialValue, { type, payload }) => {
         return { ...store, reqUser: payload };
     }
     else if (type === DELETE_POST) {
-        return { ...store, deletePost: payload };
+        return { ...store, deletedPost: payload };
     }
     else if (type === LIKE_POST) {
         return { ...store, likePost: payload };

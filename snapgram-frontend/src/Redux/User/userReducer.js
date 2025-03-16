@@ -1,7 +1,7 @@
-import { FOLLOW_USER, GET_USER_BY_USERNAME, GET_USERS_BY_USER_IDS, LOGIN_USER, REGISTER_USER, SEARCH_USER, UNFOLLOW_USER, UPDATE_USER } from "./ActionType";
+import { FOLLOW_USER, GET_USER_BY_USERNAME, GET_USERS_BY_USER_IDS, LOGIN_USER, REGISTER_USER, REQ_USER, SEARCH_USER, UNFOLLOW_USER, UPDATE_USER } from "./ActionType";
 
 
-const initialState = {
+const initialValue = {
     reqUser: null,
     findByUsername: null,
     findUserByIds: [],
@@ -11,12 +11,8 @@ const initialState = {
     updatedUser: null
   };
   
-  export const UserReducer = (store = initialState, {type, payload}) => {
-    if(type=== LOGIN_USER){
-      return { ...store, reqUser: payload };
-      // return { ...state, isAuthenticated: true, user: action.payload };
-    }
-    else if(type=== REGISTER_USER){
+  export const UserReducer = (store = initialValue, {type, payload}) => {
+    if(type=== REQ_USER){
       return { ...store, reqUser: payload };
     }
     else if(type=== GET_USER_BY_USERNAME){

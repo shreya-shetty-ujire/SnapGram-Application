@@ -4,13 +4,20 @@ import { Button, Modal, ModalBody, ModalContent, ModalOverlay } from "@chakra-ui
 import { FaPhotoVideo } from 'react-icons/fa';
 import './CreatePostModal.css'
 import { GrEmoji } from "react-icons/gr"
-import {GoLocation} from 'react-icons/go'
+import { GoLocation } from 'react-icons/go'
+import { useDispatch } from 'react-redux';
+import { createPostAction } from '../../Redux/Post/Action';
+import { uploadToCloudnary } from '../../Components/Config/UploadToCloud';
 
 const CreatePostModal = ({ onClose, isOpen }) => {
 
     const [isDragOver, setIsDragOver] = useState(false);
     const [file, setFile] = useState();
     const [caption, setCaption] = useState("");
+    const dispatch = useDispatch();
+    const [imageUrl, setImageUrl] = useState("")
+    const [location, setLocation] = useState("")
+    const token = localStorage.getItem("jwtToken")
 
     const handleDrop = (event) => {  //Triggered when a file is dropped onto the drag area.
         event.preventDefault()
@@ -32,10 +39,13 @@ const CreatePostModal = ({ onClose, isOpen }) => {
 
     }
 
-    const handleOnChange = (e) => {
+    const handleOnChange = async (e) => {
         const file = e.target.files[0];
         if (file && (file.type.startsWith("image/") || file.type.startsWith("image/"))) {
+            const imgUrl = await uploadToCloudnary(file)
+            setImageUrl(imgUrl);
             setFile(file);
+            console.log("file: ", file);
         }
         else {
             setFile(null);
@@ -46,6 +56,19 @@ const CreatePostModal = ({ onClose, isOpen }) => {
         setCaption(e.target.value);
     }
 
+    const handleCreatePost = () => {
+        const data = {
+            jwt: token,
+            data: {
+                caption,
+                location,
+                image: imageUrl
+            }
+
+        }
+        dispatch(createPostAction(data))
+        onClose()
+    }
     return (
         <div>
             <Modal size={"6xl"} onClose={onClose} isOpen={isOpen} isCentered className='border-r-4'>
@@ -53,7 +76,10 @@ const CreatePostModal = ({ onClose, isOpen }) => {
                 <ModalContent>
                     <div className='flex justify-between py-1 px-10 items-center model-header border-b'>
                         <p className='model-title pl-[41%] font-semibold text-lg pb-2 pt-2'>Create New Post</p>
-                        <Button variant={"ghost"} size="sm" colorScheme={'blue'}>
+                        <Button variant={"ghost"}
+                            size="lg"
+                            colorScheme={'blue'}
+                            onClick={handleCreatePost}>
                             Share
                         </Button>
 
@@ -102,10 +128,10 @@ const CreatePostModal = ({ onClose, isOpen }) => {
                                         <GrEmoji />
                                         <p className='opacity-70'>{caption?.length}/2,200</p>
                                     </div>
-                                    <hr/>
+                                    <hr />
                                     <div className='flex p-2 justify-between items-center'>
-                                        <input className='locationInput' type="text" placeholder='Add location' name='location'/>
-                                        <GoLocation className='text-4xl pr-3'/>
+                                        <input onChange={(e) => setLocation(e.target.value)} className='locationInput' type="text" placeholder='Add location' name='location' />
+                                        <GoLocation className='text-4xl pr-3' />
                                     </div>
                                 </div>
                             </div>

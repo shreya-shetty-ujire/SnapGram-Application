@@ -14,6 +14,7 @@ export const createPostAction = (data) => async (dispatch) => {
         })
 
         const post = await res.json();
+        console.log("Created Post: ", post)
         dispatch({ type: CREATE_NEW_POST, payload: post })
     } catch (error) {
         console.log("Catch: ", error);
@@ -22,6 +23,7 @@ export const createPostAction = (data) => async (dispatch) => {
 }
 
 export const findUserPostAction = (data) => async (dispatch) => {
+    console.log("Find Post by user ids: ",data)
     try {
         const res = await fetch(`${BASE_API}/posts/following/${data.userIds}`, {
             method: "GET",

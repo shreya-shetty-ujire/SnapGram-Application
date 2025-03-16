@@ -10,7 +10,7 @@ import { BsBookmarkFill } from 'react-icons/bs';
 import CommentModel from '../Comment/CommentModel';
 import { useDisclosure } from '@chakra-ui/react';
 
-const PostCard = () => {
+const PostCard = ({post}) => {
     const [showDropDown, setShowDropDown] = useState(false);
     const [isPostLike, setIsPostLike] = useState(false);
     const [isSaved, setIsSaved] = useState(false);
@@ -44,16 +44,21 @@ const PostCard = () => {
                         <BsThreeDots className='dots' onClick={handleClick} />
 
                         <div className="dropdown-content">
-                            {showDropDown && <p className="bg-black text-white py-1 px-4 rounded-md cursor-pointer">Delete</p>}
+                            {showDropDown && <p className="bg-black text-white py-1 px-4 rounded-md cursor-pointer">
+                                Delete</p>}
                         </div>
                     </div>
                 </div>
                 <div className='w-full '>
-                    <img className='post-img' src="https://wallpapercave.com/wp/wp3720070.jpg" alt="" />
+                    <img className='post-img' src={post?.image} alt="" />
                 </div>
+
                 <div className='flex justify-between items-center w-full py-4'>
                     <div className='flex items-center space-x-6'>
-                        {isPostLike ? <AiFillHeart className="text-3xl cursor-pointer hover:opacity-50 text-red-600" onClick={handlePostClick} /> : <AiOutlineHeart className="text-3xl cursor-pointer hover:opacity-50" onClick={handlePostClick} />}
+                        {isPostLike ? <AiFillHeart className="text-3xl cursor-pointer hover:opacity-50 text-red-600" 
+                        onClick={handlePostClick} /> : 
+                        <AiOutlineHeart className="text-3xl cursor-pointer hover:opacity-50" 
+                        onClick={handlePostClick} />}
 
 
                         <FaRegComment onClick={handleOpenCommentModel} className=" text-2xl cursor-pointer hover:opacity-50" />
