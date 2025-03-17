@@ -39,7 +39,6 @@ export const findUserPostAction = (data) => async (dispatch) => {
     } catch (error) {
         console.log("Catch: ", error);
     }
-
 }
 
 export const reqUserPostAction = (data) => async (dispatch) => {

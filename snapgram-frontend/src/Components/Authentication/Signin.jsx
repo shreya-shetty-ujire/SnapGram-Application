@@ -38,7 +38,7 @@ const Signin = () => {
       dispatch(getUserProfileAction(token));
     }
     
-  },[token])
+  }, [token])
 
   const handleNavigate = () => navigate("/signup")
 

@@ -2,7 +2,6 @@ import React , { useEffect, useState } from 'react';
 import './Dashboard.css';
 import HomeRight from '../HomeRight/HomeRight';
 import PostCard from '../Posts/PostCard';
-import CreatePostModal from '../Posts/CreatePostModal';
 import { useDisclosure } from '@chakra-ui/react';
 import { useDispatch, useSelector } from 'react-redux';
 import { findUserPostAction } from '../../Redux/Post/Action';
@@ -19,19 +18,23 @@ const Dashboard = () => {
 
     // get list of following user ids
     useEffect(()=>{
-        const newIds = user.reqUser?.following ? user.reqUser.following.map((user) => user.id) : [];
-            setUserIds([user.reqUser?.id, ...newIds]); 
+        if (user && user.reqUser) {
+        const newIds = user.reqUser?.following || []; 
+            setUserIds([user.reqUser?.userId, ...newIds]); 
+        }
     }, [user.reqUser]);
 
     useEffect(()=>{
-        if (userIds && userIds.length > 0) {
+        if (user.reqUser && userIds && userIds.length > 0) {
             const data = {
               jwt: token,
               userIds: userIds.join(","),
             };
             dispatch(findUserPostAction(data));
           }
-    }, [userIds, post.createdPost, post.deletedPost]);
+    }, [userIds, post.createdPost, post.deletedPost, user.reqUser]);
+
+    console.log("POstss:",post)
 
     return (
         <div>

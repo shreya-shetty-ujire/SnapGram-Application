@@ -3,6 +3,7 @@ import { CREATE_COMMENT, DELETE_COMMENT, GET_POST_COMMENT, LIKE_COMMENT, UNLIKE_
 const BASE_API = "http://localhost:8080"
 
 export const createCommentAction = (data) => async (dispatch) => {
+    
     try {
         const res = await fetch(`${BASE_API}/comments/create/${data.postId}`, {
             method: "POST",

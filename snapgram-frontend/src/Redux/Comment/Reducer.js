@@ -10,7 +10,7 @@ const initialValue = {
     deleteComment:null
 };
 
-export const PostReducer = (store = initialValue, { type, payload }) => {
+export const CommentReducer = (store = initialValue, { type, payload }) => {
     if (type === CREATE_COMMENT) {
         return { ...store, createComment: payload };
         // return { ...state, isAuthenticated: true, user: action.payload };

@@ -3,7 +3,7 @@ import { AiFillHeart } from 'react-icons/ai'
 import { AiOutlineHeart } from 'react-icons/ai';
 
 
-const CommentCard = () => {
+const CommentCard = ({comment, user}) => {
     const [isCommentLike, setIsCommentLike] = useState(false);
     
     const handleLiked = () => {
@@ -15,17 +15,18 @@ const CommentCard = () => {
         <div className='pt-8'>
             <div className='flex items-center justify-between'>
                 <div className='flex items-center space-x-3'>
-                    <img className='h-12 w-12 rounded-full' src='https://thewowstyle.com/wp-content/uploads/2015/01/nature-wallpaper-27.jpg' alt='' />
+                    <img className='h-12 w-12 rounded-full' 
+                    src='https://thewowstyle.com/wp-content/uploads/2015/01/nature-wallpaper-27.jpg' alt='' />
 
                     <div>
 
                         <p>
-                            <span className='font-semibold text-lg'>username2</span>
-                            <span className='pl-2'>Looking beautiful</span>
+                            <span className='font-semibold text-lg'>{user?.username}</span>
+                            <span className='pl-2'>{comment.content}</span>
                         </p>
 
                         <div className='flex space-x-4 text-sm opacity-50 font-semibold pt-2'>
-                            <span>2 likes</span>
+                            <span>{comment.likes?.length || 0} likes</span>
                             <span>Reply</span>
                         </div>
                     </div>

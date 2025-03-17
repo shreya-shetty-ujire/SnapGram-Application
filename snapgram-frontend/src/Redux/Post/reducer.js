@@ -20,7 +20,7 @@ export const PostReducer = (store = initialValue, { type, payload }) => {
         // return { ...state, isAuthenticated: true, user: action.payload };
     }
     else if (type === GET_USER_POST) {
-        return { ...store, reqUser: payload };
+        return { ...store, usersPost: payload };
     }
     else if (type === DELETE_POST) {
         return { ...store, deletedPost: payload };

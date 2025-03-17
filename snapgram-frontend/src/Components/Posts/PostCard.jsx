@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { BsThreeDots } from 'react-icons/bs'
 import './PostCard.css'
 import { AiFillHeart } from 'react-icons/ai';
@@ -9,25 +9,53 @@ import { BsBookmark } from 'react-icons/bs';
 import { BsBookmarkFill } from 'react-icons/bs';
 import CommentModel from '../Comment/CommentModel';
 import { useDisclosure } from '@chakra-ui/react';
+import { useDispatch, useSelector } from 'react-redux';
+import { likePostAction, savePostAction, unlikePostAction, unsavePostAction } from '../../Redux/Post/Action';
+import { isPostLikedByUser, isSavedPost } from '../Config/Utils';
+import { useNavigate } from 'react-router-dom';
 
-const PostCard = ({post}) => {
+const PostCard = ({ post }) => {
     const [showDropDown, setShowDropDown] = useState(false);
     const [isPostLike, setIsPostLike] = useState(false);
     const [isSaved, setIsSaved] = useState(false);
-    const {isOpen, onOpen, onClose} = useDisclosure();
+    const { isOpen, onOpen, onClose } = useDisclosure();
+    const dispatch = useDispatch();
 
+    const { user } = useSelector((store) => store);
+    const token = localStorage.getItem("jwtToken");
+
+    const data = { jwt: token, postId: post?.postId }
+    const navigate=useNavigate();
     const handleClick = () => {
         setShowDropDown(!showDropDown);
     }
-    const handlePostClick = () => {
-        setIsPostLike(!isPostLike);
+    const handlePostLike = () => {
+        setIsPostLike(true);
+        dispatch(likePostAction(data))
     }
-    const handleIsSaved = () => {
-        setIsSaved(!isSaved);
+    const handlePostUnLike = () => {
+        setIsPostLike(false);
+        dispatch(unlikePostAction(data))
+    }
+    const handleSavePost = () => {
+        setIsSaved(true);
+        dispatch(savePostAction(data))
+
+    }
+    const handleUnSavePost = () => {
+        setIsSaved(false);
+        dispatch(unsavePostAction(data))
     }
     const handleOpenCommentModel = () => {
+        navigate(`/comment/${post}`)
         onOpen();
     }
+
+    useEffect(() => {
+        setIsPostLike(isPostLikedByUser(post, user.reqUser?.userId))
+        setIsSaved(isSavedPost(user.reqUser,post.postId))
+
+    }, [post, user.reqUser])
 
     return (
         <div>
@@ -54,24 +82,36 @@ const PostCard = ({post}) => {
                 </div>
 
                 <div className='flex justify-between items-center w-full py-4'>
-                    <div className='flex items-center space-x-6'>
-                        {isPostLike ? <AiFillHeart className="text-3xl cursor-pointer hover:opacity-50 text-red-600" 
-                        onClick={handlePostClick} /> : 
-                        <AiOutlineHeart className="text-3xl cursor-pointer hover:opacity-50" 
-                        onClick={handlePostClick} />}
+                    <div className="flex items-center space-x-6">
+                        {isPostLike ? (
+                            <AiFillHeart
+                                className="text-3xl cursor-pointer hover:opacity-50 text-red-600"
+                                onClick={handlePostUnLike}
+                            />
+                        ) : (
+                            <AiOutlineHeart
+                                className="text-3xl cursor-pointer hover:opacity-50 text-black" // Ensure it's black when unliked
+                                onClick={handlePostLike}
+                            />
+                        )}
 
 
-                        <FaRegComment onClick={handleOpenCommentModel} className=" text-2xl cursor-pointer hover:opacity-50" />
+                        <FaRegComment 
+                        onClick={handleOpenCommentModel} 
+                        className=" text-2xl cursor-pointer hover:opacity-50" />
                         <RiSendPlaneLine className=" text-2xl cursor-pointer hover:opacity-50" />
 
                     </div>
                     <div className='text-2xl cursor-pointer hover:opacity-50'>
-                        {isSaved ? <BsBookmarkFill className='text-2xl cursor-pointer hover:opacity-50' onClick={handleIsSaved} /> : <BsBookmark onClick={handleIsSaved} />}
+                        {isSaved ? <BsBookmarkFill className='text-2xl cursor-pointer hover:opacity-50'
+                            onClick={handleUnSavePost} /> :
+                            <BsBookmark onClick={handleSavePost} />}
                     </div>
                 </div>
                 <div className='pl-0.5'>
                     <div>
-                        <p className='font-semibold'> 50 likes </p>
+
+                        {post.likes?.length > 0 && <p className='font-semibold'>  {post.likes?.length} likes </p>}
 
                     </div>
                     <div className=' flex space-x-2'>
@@ -80,7 +120,7 @@ const PostCard = ({post}) => {
 
                     </div>
                     <div>
-                        <p className='text-gray-500'>View 10 comment </p>
+                        {post.comments?.length > 0 && <p className='text-gray-500'>View all {post.comments?.length} comment </p>}
                     </div>
                     <div className='border-b pb-2'>
                         <div className='w-full'>
@@ -95,8 +135,8 @@ const PostCard = ({post}) => {
                 isOpen={isOpen}
                 isPostLike={isPostLike}
                 isSaved={isSaved}
-                handlePostClick={handlePostClick}
-                handleIsSaved={handleIsSaved}
+                handlePostClick={handlePostLike}
+                handleIsSaved={handleSavePost}
             />
         </div>
     );

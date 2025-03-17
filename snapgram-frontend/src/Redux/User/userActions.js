@@ -2,14 +2,14 @@ import { FOLLOW_USER, GET_USER_BY_USERNAME, GET_USERS_BY_USER_IDS, REQ_USER, SEA
 
 const BASE_API = "http://localhost:8080"
 
-export const getUserProfileAction = (jwt) => async (dispatch) => {
+export const getUserProfileAction = (token) => async (dispatch) => {
   
   try {
     const res = await fetch(`${BASE_API}/user/reqProfile`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
-        Authorization: "Bearer "+jwt
+        Authorization: "Bearer "+token
       }
     })
 
