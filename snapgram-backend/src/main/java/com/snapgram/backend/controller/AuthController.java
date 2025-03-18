@@ -13,6 +13,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.HashMap;
+import java.util.Map;
+
 
 @RestController
 public class AuthController {
@@ -31,13 +34,15 @@ public class AuthController {
 
 
     @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestBody UserRequestDto userRequestDto) {
+    public ResponseEntity<User> login(@RequestBody UserRequestDto userRequestDto) {
         String jwtToken=authService.authenticateUser(userRequestDto);
+        User user = userService.findUserByUsername(userRequestDto.getUsername());
 
         HttpHeaders headers = new HttpHeaders();
         headers.set("Authorization", jwtToken);
 
-        // Return the response with the Authorization header set
-        return new ResponseEntity<>(null, headers, HttpStatus.OK);
+
+        // Return the response body with the JWT token
+        return new ResponseEntity<>(user, headers , HttpStatus.OK);
     }
 }

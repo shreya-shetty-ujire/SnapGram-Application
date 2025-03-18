@@ -22,24 +22,23 @@ public class UserController {
     UserService userService;
 
     @GetMapping("/id/{id}")
-    public ResponseEntity<UserDto> findUserById(@PathVariable @Valid Integer id){
+    public ResponseEntity<User> findUserById(@PathVariable @Valid Integer id){
         User user=userService.findUserById(id);
-        return new ResponseEntity <>(UserDtoMapper.convertToUserDto(user),HttpStatus.OK);
+        return new ResponseEntity <>(user,HttpStatus.OK);
     }
 
     @PutMapping("/edit")
-    public ResponseEntity<UserDto> updateUser(
+    public ResponseEntity<User> updateUser(
                                              @RequestBody @Valid UserDto userDto,
                                              @RequestHeader("Authorization") String token){
         User user=userService.findUserProfile(token);
-        User updatedUser= userService.updateUser(user.getUserId(),userDto);
-        return new ResponseEntity <>(UserDtoMapper.convertToUserDto(updatedUser), HttpStatus.OK);
+        return new ResponseEntity <>(user, HttpStatus.OK);
     }
 
     @GetMapping("/get/{username}")
-    public ResponseEntity<UserDto> findUserByUsernameHandler(@PathVariable String username){
+    public ResponseEntity<User> findUserByUsernameHandler(@PathVariable String username){
         User user=userService.findUserByUsername(username);
-        return new ResponseEntity <>(UserDtoMapper.convertToUserDto(user),HttpStatus.OK);
+        return new ResponseEntity <>(user,HttpStatus.OK);
     }
 
     @PutMapping("follow/{followUserId}")
@@ -62,23 +61,22 @@ public class UserController {
 
     @GetMapping("/reqProfile")
     public ResponseEntity<UserDto> findUserProfileHandler(@RequestHeader("Authorization") String token){
+
         User user=userService.findUserProfile(token);
         UserDto userDto=UserDtoMapper.convertToUserDto(user);
         return new ResponseEntity <>(userDto, HttpStatus.OK);
     }
 
     @GetMapping("/findByIds")
-    public ResponseEntity<List<UserDto>> findUserByUserIdsHandler(@PathVariable List<Integer> userIds){
+    public ResponseEntity<List<User>> findUserByUserIdsHandler(@PathVariable List<Integer> userIds){
         List<User> users=userService.findUsersByIds(userIds);
-        List<UserDto> userDtos=users.stream().map(UserDtoMapper::convertToUserDto).toList();
-        return new ResponseEntity <>(userDtos,HttpStatus.OK);
+        return new ResponseEntity <>(users,HttpStatus.OK);
     }
 
     @GetMapping("/search")  // http://localhost/3030/search?id="searchedId"
-    public ResponseEntity<List<UserDto>> searchUsersHandler(@RequestParam("id") String query){
+    public ResponseEntity<List<User>> searchUsersHandler(@RequestParam("id") String query){
         List<User> users= userService.searchUsers(query);
-        List<UserDto> userDto=users.stream().map(UserDtoMapper::convertToUserDto).toList();
-        return new ResponseEntity <>(userDto,HttpStatus.OK);
+        return new ResponseEntity <>(users,HttpStatus.OK);
     }
 
 

@@ -1,6 +1,7 @@
 package com.snapgram.backend.model;
 
 import com.fasterxml.jackson.annotation.*;
+import com.snapgram.backend.DTO.UserDto;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Size;
 
@@ -12,12 +13,11 @@ import java.util.Set;
 
 @Entity
 @Table(name="post")
-@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "postId")
 public class Post {
 
     @Id
-    @GeneratedValue(strategy= GenerationType.AUTO)
-    @Column(name="post_id")
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "post_id")
     private Integer postId;
 
     private String image;
@@ -27,21 +27,31 @@ public class Post {
 
     private LocalDateTime createdAt;
 
-    @ManyToOne
-    @JoinColumn(name="user_id",nullable=false)
-    private User user;
+    // Prevent circular reference between User and Post
+    @Embedded
+    @AttributeOverrides({
+            @AttributeOverride(name="id", column=@Column(name="user_id")),
+            @AttributeOverride(name="email", column=@Column(name="user_email")),
+    })
+    private UserDto user;
 
-    @ManyToMany
-    @JoinTable(
-            name = "post_likes",
-            joinColumns = @JoinColumn(name = "post_id"),
-            inverseJoinColumns = @JoinColumn(name = "user_id")
-    )
-    private Set<User> likes = new HashSet<>();
+    @Embedded
+    @ElementCollection
+    @JoinTable(name="likes", joinColumns = @JoinColumn(name="user_id"))
+    private Set<UserDto> likes = new HashSet<>();
 
-    @OneToMany(mappedBy = "post",cascade= CascadeType.ALL)
-    private List<Comments> comments = new ArrayList <Comments>();
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private List<Comments> comments = new ArrayList<>();
 
+    public Post(Integer postId, String image, String caption, LocalDateTime createdAt, UserDto user, Set <UserDto> likes, List <Comments> comments) {
+        this.postId = postId;
+        this.image = image;
+        this.caption = caption;
+        this.createdAt = createdAt;
+        this.user = user;
+        this.likes = likes;
+        this.comments = comments;
+    }
 
     public Integer getPostId() {
         return postId;
@@ -51,13 +61,7 @@ public class Post {
         this.postId = post_id;
     }
 
-    public User getUser() {
-        return user;
-    }
 
-    public void setUser(User user) {
-        this.user = user;
-    }
 
     public String getImage() {
         return image;
@@ -83,11 +87,19 @@ public class Post {
         this.createdAt = createdAt;
     }
 
-    public Set <User> getLikes() {
+    public UserDto getUser() {
+        return user;
+    }
+
+    public void setUser(UserDto user) {
+        this.user = user;
+    }
+
+    public Set <UserDto> getLikes() {
         return likes;
     }
 
-    public void setLikes(Set <User> likes) {
+    public void setLikes(Set <UserDto> likes) {
         this.likes = likes;
     }
 

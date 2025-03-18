@@ -81,13 +81,26 @@ public class UserServiceImpl implements UserService {
         User followUser = findUserById(followUserId);
         logger.info("Attempting to follow {}", followUser.getUsername());
 
+        UserDto follower=new UserDto();
+        follower.setUserId(reqUser.getUserId());
+        follower.setEmail(reqUser.getEmail());
+        follower.setName(reqUser.getName());
+        follower.setUserImage(reqUser.getUserImage());
+        follower.setUsername(reqUser.getUsername());
 
-        reqUser.getFollowing().add(followUser);
-        followUser.getFollowers().add(reqUser);
+        UserDto following =new UserDto();
+        following.setUserId(followUser.getUserId());
+        following.setEmail(followUser.getEmail());
+        following.setName(followUser.getName());
+        following.setUserImage(followUser.getUserImage());
+        following.setUsername(followUser.getUsername());
+
+        reqUser.getFollowing().add(following);
+        followUser.getFollowers().add(follower);
 
         // Saved because the relationship followers and following are modified so to persist the changes we use save
-        userRepository.save(reqUser);
         userRepository.save(followUser);
+        userRepository.save(reqUser);
 
         logger.info("User follows {}", followUser.getUsername());
 
@@ -97,18 +110,33 @@ public class UserServiceImpl implements UserService {
     @Override
     public String unFollowUser(Integer reqUserId, Integer unfollowUserId) {
         User reqUser = findUserById(reqUserId);
-        User unfollowUser = findUserById(unfollowUserId);
+        User followUser = findUserById(unfollowUserId);
+        logger.info("Attempting to follow {}", followUser.getUsername());
 
-        logger.info("Attempting to unfollow {}", unfollowUser.getUsername());
+        UserDto follower=new UserDto();
+        follower.setUserId(reqUser.getUserId());
+        follower.setEmail(reqUser.getEmail());
+        follower.setName(reqUser.getName());
+        follower.setUserImage(reqUser.getUserImage());
+        follower.setUsername(reqUser.getUsername());
 
-        unfollowUser.getFollowers().remove(reqUser);
-        reqUser.getFollowing().remove(unfollowUser);
+        UserDto following =new UserDto();
+        following.setUserId(followUser.getUserId());
+        following.setEmail(followUser.getEmail());
+        following.setName(followUser.getName());
+        following.setUserImage(followUser.getUserImage());
+        following.setUsername(followUser.getUsername());
 
+        reqUser.getFollowing().remove(follower);
+        followUser.getFollowers().remove(follower);
+
+        // Saved because the relationship followers and following are modified so to persist the changes we use save
+        userRepository.save(followUser);
         userRepository.save(reqUser);
-        userRepository.save(unfollowUser);
 
-        logger.info("User unfollowed {}", unfollowUser.getUsername());
-        return "You have successfully unfollowed " + unfollowUser.getUsername();
+
+        logger.info("User unfollowed {}", followUser.getUsername());
+        return "You have successfully unfollowed " + followUser.getUsername();
     }
 
     @Override
@@ -129,7 +157,9 @@ public class UserServiceImpl implements UserService {
     @Override
     public User findUserProfile(String token) throws UserNotFoundException {
         token=token.substring(7); //Bearer
+        logger.info(token);
         String username = jwtUtil.extractUsername(token);
+        logger.info("Sending requested user details: "+username);
         return userRepository.findByUsername(username).orElseThrow(()->new UserNotFoundException("User with " +
                 "username "+ username+" not found"));
     }

@@ -14,7 +14,7 @@ public interface PostService {
 
     String deletePost(Integer postId, Integer userId) throws UserException, PostException;
 
-    List <Post> getPostsByUser(Integer userId) throws UserException;
+    List <Post> getPostsByUserId(Integer userId) throws UserException;
 
     Post getPostById(Integer postId) throws PostException;
 
@@ -28,4 +28,6 @@ public interface PostService {
     Post likePost(Integer postId, Integer userId) throws UserException, PostException;
 
     Post unlikePost(Integer postId, Integer userId) throws UserException, PostException;
+
+
 }

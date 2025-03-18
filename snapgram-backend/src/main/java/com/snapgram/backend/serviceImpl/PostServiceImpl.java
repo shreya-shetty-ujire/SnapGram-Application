@@ -1,6 +1,7 @@
 package com.snapgram.backend.serviceImpl;
 
 
+import com.snapgram.backend.DTO.UserDto;
 import com.snapgram.backend.exception.PostException;
 import com.snapgram.backend.exception.UserException;
 import com.snapgram.backend.model.Post;
@@ -9,6 +10,8 @@ import com.snapgram.backend.repository.PostRepository;
 import com.snapgram.backend.repository.UserRepository;
 import com.snapgram.backend.service.PostService;
 import com.snapgram.backend.service.UserService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,6 +20,7 @@ import java.util.List;
 
 @Service
 public class PostServiceImpl implements PostService {
+    private static final Logger logger = LoggerFactory.getLogger(UserService.class);
 
     @Autowired
     UserService userService;
@@ -30,8 +34,16 @@ public class PostServiceImpl implements PostService {
     @Override
     public Post createPost(Post post, Integer userId) throws UserException {
         User user=userService.findUserById(userId);
+
+        UserDto userDto= new UserDto();
+
+        userDto.setEmail(user.getEmail());
+        userDto.setUserId(user.getUserId());
+        userDto.setName(user.getName());
+        userDto.setUserImage(user.getUserImage());
+        userDto.setUsername(user.getUsername());
         post.setCreatedAt(LocalDateTime.now());
-        post.setUser(user);
+        post.setUser(userDto);
         return postRepository.save(post);
     }
 
@@ -47,13 +59,12 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public List<Post> getPostsByUser(Integer userId) throws UserException {
+    public List<Post> getPostsByUserId(Integer userId) throws UserException {
         List<Post> posts = postRepository.findByUserId(userId);
         if (posts.isEmpty()) {
             throw new UserException("No posts yet");
         }
 
-        // Convert List<Post> to List<PostDto> using PostDtoMapper
         return posts;
     }
 
@@ -65,6 +76,10 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public List <Post> getAllPostByUserIds(List <Integer> userIds) throws PostException, UserException {
+        System.out.println("User IDs: " + userIds);
+        if (userIds == null || userIds.isEmpty()) {
+            throw new IllegalArgumentException("userIds list is null or empty!");
+        }
         List<Post> posts=postRepository.findAllPostsByUserIds(userIds);
 
         if(posts.isEmpty()){
@@ -102,8 +117,15 @@ public class PostServiceImpl implements PostService {
     public Post likePost(Integer postId, Integer userId) throws UserException, PostException {
         Post post = getPostById(postId);
         User user=userService.findUserById(userId);
+        UserDto userDto= new UserDto();
 
-        post.getLikes().add(user);
+        userDto.setEmail(user.getEmail());
+        userDto.setUserId(user.getUserId());
+        userDto.setName(user.getName());
+        userDto.setUserImage(user.getUserImage());
+        userDto.setUsername(user.getUsername());
+
+        post.getLikes().add(userDto);
         return postRepository.save(post);
     }
 
@@ -111,8 +133,15 @@ public class PostServiceImpl implements PostService {
     public Post unlikePost(Integer postId, Integer userId) throws UserException, PostException {
         Post post = getPostById(postId);
         User user=userService.findUserById(userId);
+        UserDto userDto= new UserDto();
 
-        post.getLikes().remove(user);
+        userDto.setEmail(user.getEmail());
+        userDto.setUserId(user.getUserId());
+        userDto.setName(user.getName());
+        userDto.setUserImage(user.getUserImage());
+        userDto.setUsername(user.getUsername());
+
+        post.getLikes().remove(userDto);
         return postRepository.save(post);
     }
 }

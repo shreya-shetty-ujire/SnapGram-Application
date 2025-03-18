@@ -1,6 +1,7 @@
 package com.snapgram.backend.serviceImpl;
 
 
+import com.snapgram.backend.DTO.UserDto;
 import com.snapgram.backend.exception.CommentException;
 import com.snapgram.backend.exception.PostException;
 import com.snapgram.backend.exception.UserException;
@@ -37,10 +38,17 @@ public class CommentServiceImpl implements CommentService {
     public Comments createComment(Comments comment, Integer postId, Integer userId) throws UserException, PostException {
         User user=userService.findUserById(userId);
         Post post=postService.getPostById(postId);
+        UserDto userDto= new UserDto();
 
-        comment.setUser(user);
+        userDto.setEmail(user.getEmail());
+        userDto.setUserId(user.getUserId());
+        userDto.setName(user.getName());
+        userDto.setUserImage(user.getUserImage());
+        userDto.setUsername(user.getUsername());
+
+        comment.setUser(userDto);
         comment.setCreatedAt(LocalDateTime.now());
-        comment.setPost(post);
+//        comment.setPost(post);
         Comments saveComment=commentsRepository.save(comment);
 
         post.getComments().add(saveComment);
@@ -71,8 +79,14 @@ public class CommentServiceImpl implements CommentService {
     public Comments likeComment(Integer commentId, Integer userId) throws CommentException, UserException {
         User user=userService.findUserById(userId);
         Comments comment = findCommentById(commentId);
+        UserDto userDto= new UserDto();
 
-        comment.getLikes().add(user);
+        userDto.setEmail(user.getEmail());
+        userDto.setUserId(user.getUserId());
+        userDto.setName(user.getName());
+        userDto.setUserImage(user.getUserImage());
+        userDto.setUsername(user.getUsername());
+        comment.getLikes().add(userDto);
 
         return commentsRepository.save(comment);
     }
@@ -82,7 +96,15 @@ public class CommentServiceImpl implements CommentService {
         User user=userService.findUserById(userId);
         Comments comment = findCommentById(commentId);
 
-        comment.getLikes().remove(user);
+        UserDto userDto= new UserDto();
+
+        userDto.setEmail(user.getEmail());
+        userDto.setUserId(user.getUserId());
+        userDto.setName(user.getName());
+        userDto.setUserImage(user.getUserImage());
+        userDto.setUsername(user.getUsername());
+
+        comment.getLikes().remove(userDto);
 
         return commentsRepository.save(comment);
     }

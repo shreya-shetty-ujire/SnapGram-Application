@@ -2,6 +2,7 @@ package com.snapgram.backend.model;
 
 
 import com.fasterxml.jackson.annotation.*;
+import com.snapgram.backend.DTO.UserDto;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
@@ -14,14 +15,12 @@ import jakarta.validation.constraints.*;
 
 @Entity
 @Table(name = "app_user")
-@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "userId")
 public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "user_id")
     private Integer userId;
-
 
     @NotNull(message = "Username cannot be null")
     @Size(min = 3, max = 20, message = "Username must be between 3 and 20 characters")
@@ -31,46 +30,33 @@ public class User {
     @Pattern(regexp = "^[a-zA-Z ]+$", message = "First name must must not contain special characters")
     private String name;
 
+    @NotNull
+    private String password;
+
     @NotNull(message = "Email cannot be null")
     @Email(message = "Email should be valid")
     private String email;
 
     private String phoneNumber;
-
     private String gender;
-
     private String userImage;
-
-    @NotNull
-    private String password;
-
     private String bio;
 
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 
-    @ManyToMany
-    @JoinTable(
-            name = "user_followers",
-            joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "follower_id")
-    )
-    private Set <User> followers = new HashSet <>();
+    // Prevents circular references for followers/following
+    @Embedded
+    @ElementCollection
+    private Set<UserDto> followers = new HashSet<>();
+
+    @Embedded
+    @ElementCollection
+    private Set<UserDto> following = new HashSet<>();
+
+    // Prevents circular references for saved posts
 
     @ManyToMany
-    @JoinTable(
-            name = "user_following",
-            joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "following_id")
-    )
-    private Set <User> following = new HashSet <>();
-
-    @ManyToMany
-    @JoinTable(
-            name = "saved_posts",
-            joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "post_id")
-    )
     private List<Post> savedPosts = new ArrayList<>();
 
 
@@ -164,21 +150,38 @@ public class User {
         this.createdAt = createdAt;
     }
 
-    public Set <User> getFollowers() {
+    public Set <UserDto> getFollowers() {
         return followers;
     }
 
-    public void setFollowers(Set <User> followers) {
+    public User(Integer userId, String username, String name, String password, String email, String phoneNumber, String gender, String userImage, String bio, LocalDateTime createdAt, Set <UserDto> followers, Set <UserDto> following, List <Post> savedPosts) {
+        this.userId = userId;
+        this.username = username;
+        this.name = name;
+        this.password = password;
+        this.email = email;
+        this.phoneNumber = phoneNumber;
+        this.gender = gender;
+        this.userImage = userImage;
+        this.bio = bio;
+        this.createdAt = createdAt;
+        this.followers = followers;
+        this.following = following;
+        this.savedPosts = savedPosts;
+    }
+
+    public void setFollowers(Set <UserDto> followers) {
         this.followers = followers;
     }
 
-    public Set <User> getFollowing() {
+    public Set <UserDto> getFollowing() {
         return following;
     }
 
-    public void setFollowing(Set <User> following) {
+    public void setFollowing(Set <UserDto> following) {
         this.following = following;
     }
 
-
+    public User() {
+    }
 }

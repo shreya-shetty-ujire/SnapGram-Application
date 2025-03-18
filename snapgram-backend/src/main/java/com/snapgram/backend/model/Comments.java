@@ -1,5 +1,6 @@
 package com.snapgram.backend.model;
 
+import com.snapgram.backend.DTO.UserDto;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Size;
 
@@ -19,13 +20,17 @@ public class Comments {
     @Size(max = 500, message = "Comments preview cannot exceed 500 characters")
     private String content;
 
-    @ManyToOne
-    @JoinColumn(name="user_id",nullable=false)
-    private User user;
+    @Embedded
+    @AttributeOverrides({
+            @AttributeOverride(name="id", column=@Column(name="user_id")),
+            @AttributeOverride(name="email", column=@Column(name="user_email")),
+    })
+    private UserDto user;
 
 
-    @ManyToMany
-    private Set <User> likes=new HashSet <>();
+    @Embedded
+    @ElementCollection
+    private Set <UserDto> likes=new HashSet <>();
 
     @Column(name="created_At")
     private LocalDateTime createdAt;
@@ -34,24 +39,20 @@ public class Comments {
     @JoinColumn(name="post_id", nullable = false)
     private Post post;
 
-    public Comments(Integer commentId, User user, String content, LocalDateTime createdAt, Set <User> likes) {
+    public Comments(Integer commentId, String content, UserDto user, Set <UserDto> likes, LocalDateTime createdAt, Post post) {
+        super();
         this.commentId = commentId;
-        this.user = user;
         this.content = content;
-        this.createdAt = createdAt;
+        this.user = user;
         this.likes = likes;
+        this.createdAt = createdAt;
+        this.post = post;
     }
 
     public Comments() {
     }
 
-    public Set <User> getLikes() {
-        return likes;
-    }
 
-    public void setLikes(Set <User> likes) {
-        this.likes = likes;
-    }
 
     public Integer getCommentId() {
         return commentId;
@@ -61,12 +62,20 @@ public class Comments {
         this.commentId = commentId;
     }
 
-    public User getUser() {
+    public UserDto getUser() {
         return user;
     }
 
-    public void setUser(User user) {
+    public void setUser(UserDto user) {
         this.user = user;
+    }
+
+    public Set <UserDto> getLikes() {
+        return likes;
+    }
+
+    public void setLikes(Set <UserDto> likes) {
+        this.likes = likes;
     }
 
     public Post getPost() {

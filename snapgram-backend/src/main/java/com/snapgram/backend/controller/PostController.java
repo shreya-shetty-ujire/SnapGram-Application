@@ -12,7 +12,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/posts")
@@ -32,9 +34,9 @@ public class PostController {
         return new ResponseEntity<>(createdPost, HttpStatus.OK);
     }
 
-    @GetMapping("/getPost/{userId}")
+    @GetMapping("/getPosts/{userId}")
     public ResponseEntity<List<Post>> getPostByUserIdHandler(@PathVariable Integer userId){
-        List <Post> posts= postService.getPostsByUser(userId);
+        List <Post> posts= postService.getPostsByUserId(userId);
         return new ResponseEntity <>(posts,HttpStatus.OK);
     }
 

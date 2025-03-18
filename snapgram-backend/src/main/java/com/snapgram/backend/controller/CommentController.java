@@ -34,8 +34,7 @@ public class CommentController {
     }
 
     @GetMapping("/{postId}")
-    public ResponseEntity <List<Comments>> createCommentHandler(@PathVariable("postId") Integer postId,
-                                                          @RequestHeader("Authorization") String token ) throws CommentException {
+    public ResponseEntity <List<Comments>> findCommentsHandler(@PathVariable("postId") Integer postId ) throws CommentException {
         List <Comments > comments= commentService.findCommentsByPostId(postId);
         return new ResponseEntity <>(comments, HttpStatus.OK);
     }
