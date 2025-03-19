@@ -1,11 +1,11 @@
 package com.snapgram.backend.controller;
 
 
-import com.snapgram.backend.DTO.UserDto;
+
+import com.snapgram.backend.config.JwtUtil;
 import com.snapgram.backend.model.User;
 import com.snapgram.backend.response.MessageResponse;
 import com.snapgram.backend.service.UserService;
-import com.snapgram.backend.utilities.UserDtoMapper;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -21,6 +21,7 @@ public class UserController {
     @Autowired
     UserService userService;
 
+
     @GetMapping("/id/{id}")
     public ResponseEntity<User> findUserById(@PathVariable @Valid Integer id){
         User user=userService.findUserById(id);
@@ -29,10 +30,11 @@ public class UserController {
 
     @PutMapping("/edit")
     public ResponseEntity<User> updateUser(
-                                             @RequestBody @Valid UserDto userDto,
+                                             @RequestBody  User updatedUser,
                                              @RequestHeader("Authorization") String token){
         User user=userService.findUserProfile(token);
-        return new ResponseEntity <>(user, HttpStatus.OK);
+        User editedUser= userService.updateUser(updatedUser,user);
+        return new ResponseEntity <>(editedUser, HttpStatus.OK);
     }
 
     @GetMapping("/get/{username}")
@@ -60,14 +62,13 @@ public class UserController {
     }
 
     @GetMapping("/reqProfile")
-    public ResponseEntity<UserDto> findUserProfileHandler(@RequestHeader("Authorization") String token){
+    public ResponseEntity<User> findUserProfileHandler(@RequestHeader("Authorization") String token){
 
         User user=userService.findUserProfile(token);
-        UserDto userDto=UserDtoMapper.convertToUserDto(user);
-        return new ResponseEntity <>(userDto, HttpStatus.OK);
+        return new ResponseEntity <>(user, HttpStatus.OK);
     }
 
-    @GetMapping("/findByIds")
+    @GetMapping("/findByIds/{userIds}")
     public ResponseEntity<List<User>> findUserByUserIdsHandler(@PathVariable List<Integer> userIds){
         List<User> users=userService.findUsersByIds(userIds);
         return new ResponseEntity <>(users,HttpStatus.OK);
@@ -82,10 +83,11 @@ public class UserController {
 
 
 
-    @DeleteMapping("/delete/{userId}")
-    public ResponseEntity<String> deleteUser(@PathVariable Integer userId){
-        userService.deleteUser(userId);
-        return new ResponseEntity <>("User deleted successfully ",HttpStatus.OK);
+    @DeleteMapping("/delete")
+    public ResponseEntity<String> deleteUser(@RequestHeader("Authorization") String token){
+        String jwtToken = token.startsWith("Bearer ") ? token.substring(7) : token;
+        userService.deleteUser(jwtToken);
+        return new ResponseEntity<>("User deleted successfully", HttpStatus.OK);
     }
 
     @GetMapping("/protected")

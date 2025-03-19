@@ -22,14 +22,22 @@ public class Comments {
 
     @Embedded
     @AttributeOverrides({
-            @AttributeOverride(name="id", column=@Column(name="user_id")),
-            @AttributeOverride(name="email", column=@Column(name="user_email")),
+            @AttributeOverride(name = "userId", column = @Column(name = "user_id")),
+            @AttributeOverride(name = "username", column = @Column(name = "user_username"))
     })
     private UserDto user;
 
 
     @Embedded
     @ElementCollection
+    @CollectionTable(
+            name = "comment_likes",
+            joinColumns = @JoinColumn(name = "comment_id")
+    )
+    @AttributeOverrides({
+            @AttributeOverride(name = "userId", column = @Column(name = "like_user_id")),
+            @AttributeOverride(name = "username", column = @Column(name = "like_user_username"))
+    })
     private Set <UserDto> likes=new HashSet <>();
 
     @Column(name="created_At")

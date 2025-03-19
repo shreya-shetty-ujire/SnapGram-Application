@@ -1,6 +1,6 @@
 package com.snapgram.backend.model;
 
-import com.fasterxml.jackson.annotation.*;
+
 import com.snapgram.backend.DTO.UserDto;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Size;
@@ -30,15 +30,23 @@ public class Post {
     // Prevent circular reference between User and Post
     @Embedded
     @AttributeOverrides({
-            @AttributeOverride(name="id", column=@Column(name="user_id")),
-            @AttributeOverride(name="email", column=@Column(name="user_email")),
+            @AttributeOverride(name = "userId", column = @Column(name = "user_id")),
+            @AttributeOverride(name = "username", column = @Column(name = "user_username")),
+            @AttributeOverride(name = "email", column = @Column(name = "user_email"))
     })
     private UserDto user;
 
-    @Embedded
     @ElementCollection
-    @JoinTable(name="likes", joinColumns = @JoinColumn(name="user_id"))
+    @CollectionTable(
+            name = "post_likes",
+            joinColumns = @JoinColumn(name = "post_id")
+    )
+    @AttributeOverrides({
+            @AttributeOverride(name = "userId", column = @Column(name = "like_user_id")),
+            @AttributeOverride(name = "username", column = @Column(name = "like_user_username"))
+    })
     private Set<UserDto> likes = new HashSet<>();
+
 
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<Comments> comments = new ArrayList<>();

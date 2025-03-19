@@ -1,6 +1,6 @@
 package com.snapgram.backend.DTO;
 
-import java.util.ArrayList;
+
 import java.util.List;
 import java.util.Set;
 
@@ -12,21 +12,6 @@ import jakarta.validation.constraints.*;
 @Embeddable
 public class UserDto {
 
-
-    public UserDto(Integer userId, String username, String name, String email, String userImage, Set<User> following,
-                   Set<User> followers, String bio, String phoneNumber, String gender, List<Post> savedPosts) {
-        this.userId = userId;
-        this.username = username;
-        this.name = name;
-        this.email = email;
-        this.bio=bio;
-        this.phoneNumber=phoneNumber;
-        this.gender=gender;
-        this.userImage = userImage;
-        this.following=following;
-        this.followers=followers;
-        this.savedPosts=savedPosts.stream().map(Post::getPostId).toList();
-    }
 
         private Integer userId;
 
@@ -48,29 +33,7 @@ public class UserDto {
 
     private String userImage;
 
-    private Set<User> followers;
-    private Set <User> following;
 
-    private List<Integer> savedPosts=new ArrayList <>();
-    private String gender;
-    private String bio;
-    private String phoneNumber;
-
-    public Set <User> getFollowers() {
-        return followers;
-    }
-
-    public void setFollowers(Set <User> followers) {
-        this.followers = followers;
-    }
-
-    public Set <User> getFollowing() {
-        return following;
-    }
-
-    public void setFollowing(Set <User> following) {
-        this.following = following;
-    }
 
     public UserDto() {
 
@@ -118,36 +81,17 @@ public class UserDto {
             this.email = email;
         }
 
-    public List <Integer> getSavedPosts() {
-        return savedPosts;
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        UserDto userDto = (UserDto) obj;
+        return userId != null && userId.equals(userDto.userId);
     }
 
-    public void setSavedPosts(List <Integer> savedPosts) {
-        this.savedPosts = savedPosts;
+    @Override
+    public int hashCode() {
+        return userId != null ? userId.hashCode() : 0;
     }
-
-    public String getGender() {
-        return gender;
-    }
-
-    public void setGender(String gender) {
-        this.gender = gender;
-    }
-
-    public String getBio() {
-        return bio;
-    }
-
-    public void setBio(String bio) {
-        this.bio = bio;
-    }
-
-    public String getPhoneNumber() {
-        return phoneNumber;
-    }
-
-    public void setPhoneNumber(String phoneNumber) {
-        this.phoneNumber = phoneNumber;
-    }
-
 }
