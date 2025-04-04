@@ -20,7 +20,6 @@ public interface UserRepository extends JpaRepository<User, Integer> {
      List <User> findAllUsersByUserIds(@Param("users") List<Integer> userIds);   // Fetching Followers / Following List
 
     // Search users
-    @Query("SELECT DISTINCT u FROM User u WHERE u.username LIKE %:queryParam% OR u.email LIKE %:queryParam% OR u.name" +
-            " LIKE %:queryParam%")
+    @Query("SELECT DISTINCT u FROM User u WHERE u.username LIKE %:queryParam% OR u.email LIKE %:queryParam% OR u.name LIKE %:queryParam%")
     List<User> findByQuery(@Param("queryParam") String query);
 }

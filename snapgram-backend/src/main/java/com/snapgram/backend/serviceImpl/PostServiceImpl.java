@@ -61,10 +61,6 @@ public class PostServiceImpl implements PostService {
     @Override
     public List<Post> getPostsByUserId(Integer userId) throws UserException {
         List<Post> posts = postRepository.findByUserId(userId);
-        if (posts.isEmpty()) {
-            throw new UserException("No posts yet");
-        }
-
         return posts;
     }
 

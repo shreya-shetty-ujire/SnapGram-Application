@@ -1,7 +1,7 @@
 package com.snapgram.backend.model;
 
 
-import com.fasterxml.jackson.annotation.*;
+
 import com.snapgram.backend.DTO.UserDto;
 import jakarta.persistence.*;
 

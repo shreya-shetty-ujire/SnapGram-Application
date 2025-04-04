@@ -18,7 +18,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -155,6 +157,7 @@ public class UserServiceImpl implements UserService {
         return usersList;
     }
 
+
     @Override
     public User findUserProfile(String token) throws UserNotFoundException {
         token=token.substring(7); //Bearer
@@ -163,6 +166,15 @@ public class UserServiceImpl implements UserService {
         logger.info("Sending requested user details: "+username);
         return userRepository.findByUsername(username).orElseThrow(()->new UserNotFoundException("User with " +
                 "username "+ username+" not found"));
+    }
+
+    @Override
+    public User findProfileUsingUsername(String token, String username) throws UserNotFoundException {
+        token=token.substring(7); //Bearer
+        logger.info(token);
+        logger.info("Sending requested user details: "+username);
+        return userRepository.findByUsername(username)
+                .orElseThrow(() -> new UserNotFoundException("User with username " + username + " not found"));
     }
 
     @Override
@@ -214,10 +226,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User updateUser(User updatedUser, User existingUser) {
+    public Map <String, Object> updateUser(User updatedUser, User existingUser) {
         logger.info("Attempting to update user: {}", existingUser.getUserId());  // Log with existingUser's userId
 
         return userRepository.findById(existingUser.getUserId()).map(userToUpdate -> {
+            String oldUsername = userToUpdate.getUsername();
             // Use the fields from updatedUser to set the new values in userToUpdate.
             Optional.ofNullable(updatedUser.getUsername()).ifPresent(userToUpdate::setUsername);
             Optional.ofNullable(updatedUser.getName()).ifPresent(userToUpdate::setName);
@@ -231,7 +244,16 @@ public class UserServiceImpl implements UserService {
             User savedUser = userRepository.save(userToUpdate);
 
             logger.info("User updated successfully with ID: {}", savedUser.getUserId()); // Log the updated userId
-            return savedUser;
+            String newToken = null;
+            if (!oldUsername.equals(savedUser.getUsername())) {
+                logger.info("Username changed. Generating new token...");
+                newToken = jwtUtil.generateToken(savedUser.getUsername()); // Generate a new token
+            }
+            Map <String, Object> response = new HashMap <>();
+            response.put("user", savedUser);
+            response.put("token", newToken);
+            logger.info("Updated token" +newToken+" for username "+savedUser.getUsername());
+            return response;
         }).orElseThrow(() -> {
             logger.error("User not found. You cannot update this User");
             return new UserNotFoundException("User not found with ID: " + existingUser.getUserId());

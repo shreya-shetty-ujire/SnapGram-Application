@@ -14,5 +14,5 @@ public interface CommentService {
     Comments findCommentById(Integer commentId) throws CommentException;
     Comments likeComment(Integer commentId, Integer userId) throws CommentException, UserException;
     Comments unlikeComment(Integer commentId, Integer userId) throws CommentException, UserException;
-    String deleteComment(Integer commentId, Integer postId, Integer userId ) throws CommentException, UserException;
+    String deleteComment(Integer commentId, Integer userId ) throws CommentException, UserException;
 }

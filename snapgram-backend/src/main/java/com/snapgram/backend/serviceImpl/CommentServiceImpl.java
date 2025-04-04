@@ -13,6 +13,8 @@ import com.snapgram.backend.repository.PostRepository;
 import com.snapgram.backend.service.CommentService;
 import com.snapgram.backend.service.PostService;
 import com.snapgram.backend.service.UserService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -34,8 +36,11 @@ public class CommentServiceImpl implements CommentService {
     @Autowired
     PostService postService;
 
+    private static final Logger logger = LoggerFactory.getLogger(CommentService.class);
+
     @Override
     public Comments createComment(Comments comment, Integer postId, Integer userId) throws UserException, PostException {
+        logger.info("Creating comment for post id: ", postId);
         User user=userService.findUserById(userId);
         Post post=postService.getPostById(postId);
         UserDto userDto= new UserDto();
@@ -48,22 +53,24 @@ public class CommentServiceImpl implements CommentService {
 
         comment.setUser(userDto);
         comment.setCreatedAt(LocalDateTime.now());
-//        comment.setPost(post);
+        comment.setPostId(postId);
+
         Comments saveComment=commentsRepository.save(comment);
 
         post.getComments().add(saveComment);
         postRepository.save(post);
+        logger.info("Comment created successfully");
         return saveComment;
     }
 
     @Override
     public List<Comments> findCommentsByPostId(Integer postId) throws CommentException, PostException {
         Post post=postService.getPostById(postId);
-        List <Comments> comments = commentsRepository.findByPost(post);
+        List<Comments> comments = post.getComments();
 
-        // If no comments found, throw an exception
+        // Check if the post has no comments
         if (comments.isEmpty()) {
-            throw new CommentException("No comments found for this post!");
+            throw new CommentException("No comments found for this post.");
         }
 
         return comments;
@@ -110,11 +117,12 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public String deleteComment(Integer commentId, Integer postId, Integer userId) throws CommentException,
+    public String deleteComment(Integer commentId, Integer userId) throws CommentException,
             UserException {
         Comments comment=commentsRepository.findById(commentId)
                 .orElseThrow(()->new CommentException("Comment not found!"));
-        Post post=postService.getPostById(postId);
+        Post post=postRepository.findByCommentsContaining(comment)
+                .orElseThrow(() -> new CommentException("Associated post not found!"));
         if(comment.getUser().getUserId().equals(userId) || post.getUser().getUserId().equals(userId)){
             post.getComments().remove(comment);
             postRepository.save(post);

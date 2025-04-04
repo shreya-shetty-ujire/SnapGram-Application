@@ -58,10 +58,8 @@ public class CommentController {
     @DeleteMapping("/delete/{commentId}")
     public ResponseEntity <MessageResponse> deleteCommentHandler(@PathVariable("commentId") Integer commentId,
                                                                  @RequestHeader("Authorization") String token ) throws CommentException {
-        User user= userService.findUserProfile(token);
-        Comments comment=commentService.findCommentById(commentId);
-        String message=commentService.deleteComment(commentId,comment.getPost().getPostId(),user.getUserId());
-        MessageResponse messageResponse=new MessageResponse(message);
-        return new ResponseEntity <>(messageResponse, HttpStatus.OK);
+        User user = userService.findUserProfile(token);
+        String message = commentService.deleteComment(commentId, user.getUserId());
+        return new ResponseEntity<>(new MessageResponse(message), HttpStatus.OK);
     }
 }

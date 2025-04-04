@@ -27,12 +27,16 @@ public class Post {
 
     private LocalDateTime createdAt;
 
+    private String location;
+
     // Prevent circular reference between User and Post
     @Embedded
     @AttributeOverrides({
             @AttributeOverride(name = "userId", column = @Column(name = "user_id")),
+            @AttributeOverride(name = "email", column = @Column(name = "user_email")),
             @AttributeOverride(name = "username", column = @Column(name = "user_username")),
-            @AttributeOverride(name = "email", column = @Column(name = "user_email"))
+            @AttributeOverride(name = "userImage", column = @Column(name = "user_image")),
+            @AttributeOverride(name = "location", column = @Column(name = "location"))
     })
     private UserDto user;
 
@@ -48,10 +52,19 @@ public class Post {
     private Set<UserDto> likes = new HashSet<>();
 
 
-    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    private List<Comments> comments = new ArrayList<>();
+    @OneToMany
+    private List<Comments> comments = new ArrayList<Comments>();
 
-    public Post(Integer postId, String image, String caption, LocalDateTime createdAt, UserDto user, Set <UserDto> likes, List <Comments> comments) {
+    public String getLocation() {
+        return location;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
+    }
+
+    public Post(Integer postId, String image, String caption, LocalDateTime createdAt, UserDto user,
+                Set <UserDto> likes, List <Comments> comments, String location) {
         this.postId = postId;
         this.image = image;
         this.caption = caption;
@@ -59,6 +72,10 @@ public class Post {
         this.user = user;
         this.likes = likes;
         this.comments = comments;
+        this.location=location;
+    }
+
+    public Post() {
     }
 
     public Integer getPostId() {

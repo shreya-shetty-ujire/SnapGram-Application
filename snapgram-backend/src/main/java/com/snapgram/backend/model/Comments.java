@@ -27,6 +27,9 @@ public class Comments {
     })
     private UserDto user;
 
+    @Column(name="post_id")
+    private Integer postId;
+
 
     @Embedded
     @ElementCollection
@@ -40,21 +43,26 @@ public class Comments {
     })
     private Set <UserDto> likes=new HashSet <>();
 
+    public Integer getPostId() {
+        return postId;
+    }
+
+    public void setPostId(Integer postId) {
+        this.postId = postId;
+    }
+
     @Column(name="created_At")
     private LocalDateTime createdAt;
 
-    @ManyToOne
-    @JoinColumn(name="post_id", nullable = false)
-    private Post post;
-
-    public Comments(Integer commentId, String content, UserDto user, Set <UserDto> likes, LocalDateTime createdAt, Post post) {
+    public Comments(Integer commentId, String content, UserDto user, Set <UserDto> likes, LocalDateTime createdAt,
+                    Integer postId) {
         super();
         this.commentId = commentId;
         this.content = content;
         this.user = user;
         this.likes = likes;
         this.createdAt = createdAt;
-        this.post = post;
+        this.postId=postId;
     }
 
     public Comments() {
@@ -86,13 +94,6 @@ public class Comments {
         this.likes = likes;
     }
 
-    public Post getPost() {
-        return post;
-    }
-
-    public void setPost(Post post) {
-        this.post = post;
-    }
 
     public @Size(max = 500, message = "Comments preview cannot exceed 500 characters") String getContent() {
         return content;
