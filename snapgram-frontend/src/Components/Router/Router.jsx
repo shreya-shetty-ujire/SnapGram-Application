@@ -4,6 +4,7 @@ import Sidebar from '../Sidebar/Sidebar';
 import Dashboard from '../dashboard/Dashboard';
 import Profile from '../Profile/Profile';
 import Auth from '../../Pages/Auth/Auth';
+import EditAccountDetails from '../EditAccount/EditAccountDetails';
 
 
 const Router = () => {
@@ -18,10 +19,11 @@ const Router = () => {
                     </div>
                     <div className="w-[80%]">
                         <Routes>
-
+                        <Route path="/" element={<Dashboard />} />
                             <Route path="/dashboard" element={<Dashboard />} />
-                            <Route path="/username" element={<Profile />} />
+                            <Route path="/:username" element={<Profile />} />
                             <Route path="/comment/:postId" element={<Dashboard />} /> 
+                            <Route path="/account/edit" element={<EditAccountDetails />} /> 
                         </Routes>
                     </div>
                 </div>

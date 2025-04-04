@@ -5,7 +5,7 @@ import { FaPhotoVideo } from 'react-icons/fa';
 import './CreatePostModal.css'
 import { GrEmoji } from "react-icons/gr"
 import { GoLocation } from 'react-icons/go'
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { createPostAction } from '../../Redux/Post/Action';
 import { uploadToCloudnary } from '../../Components/Config/UploadToCloud';
 
@@ -18,7 +18,8 @@ const CreatePostModal = ({ onClose, isOpen }) => {
     const [imageUrl, setImageUrl] = useState("")
     const [location, setLocation] = useState("")
     const token = localStorage.getItem("jwtToken")
-
+    const {user} = useSelector((store) => store);
+console.log("uuuu",user)
     const handleDrop = (event) => {  //Triggered when a file is dropped onto the drag area.
         event.preventDefault()
         const droppedFile = event.dataTransfer.files[0];
@@ -111,9 +112,15 @@ const CreatePostModal = ({ onClose, isOpen }) => {
                                 <div className='pl-2 '>
                                     <div className='flex items-center pt-5'>
 
-                                        <img className='w-14 h-14 rounded-full' src='https://www.allprodad.com/wp-content/uploads/2021/03/05-12-21-happy-people.jpg' alt='' />
+                                        <img className='w-14 h-14 rounded-full' 
+                                        src={
+                                            user?.reqUser?.userImage ||
+                                            "https://static.vecteezy.com/system/resources/previews/018/765/757/original/user-profile-icon-in-flat-style-member-avatar-illustration-on-isolated-background-human-permission-sign-business-concept-vector.jpg"
+                                          }
+                                          alt=""
+                                        />
                                         <div className='ml-2'>
-                                            <p className='text-lg font-semibold'>username</p>
+                                            <p className='text-lg font-semibold'>{user?.reqUser?.username}</p>
                                         </div>
                                     </div>
                                     <div className='pt-3'>

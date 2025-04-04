@@ -1,8 +1,8 @@
 
 
-const { SIGN_IN, SIGN_UP } = require("./ActionType");
+const { SIGN_IN, SIGN_UP, LOGOUT } = require("./ActionType");
 
-export const signinAction = (data) => async (dispatch) => {
+export const signinAction = (data, setErrors) => async (dispatch) => {
     try {
         const res = await fetch("http://localhost:8080/login", {
             method: "POST",
@@ -14,8 +14,14 @@ export const signinAction = (data) => async (dispatch) => {
                 password: data.password,
             })
         });
+        
+        if (!res.ok) {
+            const errorData = await res.json(); // Get error details
+            setErrors({ fieldErrors: {}, 
+                serverError: errorData.message }); 
+            throw new Error(errorData.message);
+        }
        const token= res.headers.get("Authorization");
-console.log(token);
             localStorage.setItem("jwtToken", token);  
             dispatch({ type: SIGN_IN, payload: token});
     }

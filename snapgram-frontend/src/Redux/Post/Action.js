@@ -1,3 +1,5 @@
+import { LOGOUT } from "../../Redux/Auth/ActionType";
+
 const { CREATE_NEW_POST, GET_USER_POST, REQ_USER_POST, LIKE_POST, UNLIKE_POST, SAVE_POST, UNSAVE_POST, GET_SINGLE_POST, DELETE_POST } = require("./ActionType");
 
 const BASE_API = "http://localhost:8080"
@@ -32,7 +34,6 @@ export const findUserPostAction = (data) => async (dispatch) => {
                 Authorization: "Bearer " + data.jwt
             }
         })
-
         const posts = await res.json();
         console.log("Find Post by user ids: ", posts)
         dispatch({ type: GET_USER_POST, payload: posts })
@@ -42,8 +43,12 @@ export const findUserPostAction = (data) => async (dispatch) => {
 }
 
 export const reqUserPostAction = (data) => async (dispatch) => {
+    if (!data.userId) { 
+        console.error("Invalid userId: ", data.userId);
+        return; 
+    }
     try {
-        const res = await fetch(`${BASE_API}/posts/following/${data.userId}`, {
+        const res = await fetch(`${BASE_API}/posts/getPosts/${data.userId}`, {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",

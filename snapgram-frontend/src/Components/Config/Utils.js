@@ -18,23 +18,9 @@ export const isCommentLikedByUser=(comment, userId)=>{
     return false;
 }
 
-export const isSavedPost=(user, postId)=>{
-    for(let item of user.savedPosts){
-        if(item===postId)
-            return true;
-    }
-    return false;
-}
-
-export const isFollowingt=(reqUser, user2)=>{
-    if(reqUser && user2){
-        for(let item of user2.follower){
-            if(reqUser.id===item.id)
-                return true;
-        }
-    }
-    return false;
-}
+export const isSavedPost = (user, postId) => {
+    return Array.isArray(user?.savedPosts) && user.savedPosts.includes(postId);
+};
 
 export const timeDifference=(timestamp)=>{
     const date=new Date(timestamp);
@@ -64,3 +50,19 @@ export const timeDifference=(timestamp)=>{
     }
     
 }
+
+export const isReqUser = (userId1, userId2)=>{
+    if(userId1 && userId2){
+        return userId1===userId2
+    }
+};
+
+
+export const isFollowing = (reqUser, user2) => {
+    if (!reqUser || !user2 || !Array.isArray(user2.followers)) {
+        return false; // Ensures user2.followers is an array before looping
+    }
+
+    return user2.followers.some(item => item.userId === reqUser.userId);
+};
+

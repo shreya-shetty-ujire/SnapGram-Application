@@ -1,11 +1,12 @@
-import { FOLLOW_USER, GET_USER_BY_USERNAME, GET_USERS_BY_USER_IDS, REQ_USER, SEARCH_USER, UNFOLLOW_USER, UPDATE_USER } from "./ActionType";
+import { SIGN_IN } from "../Auth/ActionType";
+import { DELETE_USER, FOLLOW_USER, GET_USER_BY_USERNAME, GET_USERS_BY_USER_IDS, POPULAR_USER, REQ_USER, SEARCH_USER, UNFOLLOW_USER, UPDATE_USER } from "./ActionType";
 
 const BASE_API = "http://localhost:8080"
 
-export const getUserProfileAction = (token) => async (dispatch) => {
-  
+export const getUserProfileAction = (token,username) => async (dispatch) => {
+  console.log("getting profile info", username)
   try {
-    const res = await fetch(`${BASE_API}/user/reqProfile`, {
+    const res = await fetch(`${BASE_API}/user/reqProfile?username=${username}`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -13,6 +14,7 @@ export const getUserProfileAction = (token) => async (dispatch) => {
       }
     })
 
+    console.log("Token", token);
     const reqUser = await res.json();
     console.log("Response from profile API:", reqUser);
     dispatch({ type: REQ_USER, payload: reqUser });
@@ -22,7 +24,7 @@ export const getUserProfileAction = (token) => async (dispatch) => {
 }
 
 export const findUserByUsernameAction = (data) => async (dispatch) => {
-
+  console.log("findUserByUsernameAction data: ", data); // Debugging
   const res = await fetch(`${BASE_API}/user/get/${data.username}`, {
     method: "GET",
     headers: {
@@ -85,9 +87,9 @@ export const unfollowUserAction = (data) => async (dispatch) => {
 }
 
 export const searchUserAction = (data) => async (dispatch) => {
-
+console.log("qq",data)
   try {
-    const res = await fetch(`${BASE_API}/user/search?q=${data.query}`, {
+    const res = await fetch(`${BASE_API}/user/search?userId=${data.query}`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -105,20 +107,77 @@ export const searchUserAction = (data) => async (dispatch) => {
 }
 
 export const editUserAction = (data) => async (dispatch) => {
-
+  console.log("Update data:", data);
   try {
     const res = await fetch(`${BASE_API}/user/edit`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
-        Authorization: "Bearer " + data.jwt
+        Authorization: "Bearer " + data.jwt,
       },
-      body: JSON.stringify(data.data)
-    })
+      body: JSON.stringify(data.data),
+    });
+
+    if (!res.ok) {
+      const errorText = await res.text();
+      throw new Error(errorText || "Failed to update account");
+    }
 
     const user = await res.json();
-    console.log("Update User: ", user)
+    console.log("Update User: ", user);
+    const newToken = res.headers.get("Authorization");
+
+    if (newToken) {
+      localStorage.setItem("jwtToken", newToken); 
+      dispatch({ type: SIGN_IN, payload: newToken }); 
+    }
     dispatch({ type: UPDATE_USER, payload: user });
+
+    await dispatch(getUserProfileAction(newToken || data.jwt, user.username));
+    
+    return user; 
+  } catch (error) {
+    console.log("Catch error", error);
+    throw error; 
+  }
+};
+
+
+export const deleteUserAction = (data) => async (dispatch) => {
+
+  try {
+    const res = await fetch(`${BASE_API}/user/delete`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + data.jwt
+      }
+    })
+
+    const result = await res.json();
+    console.log("Deleted User: ", result)
+    dispatch({ type: DELETE_USER, payload: result });
+
+  } catch(error){
+    console.log("Catch error", error)
+  }
+
+}
+
+export const getPopularUser = (jwt) => async (dispatch) => {
+
+  try {
+    const res = await fetch(`${BASE_API}/user/popular`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + jwt
+      }
+    })
+
+    const result = await res.json();
+    console.log("Popular Users: ", result)
+    dispatch({ type: POPULAR_USER, payload: result });
 
   } catch(error){
     console.log("Catch error", error)

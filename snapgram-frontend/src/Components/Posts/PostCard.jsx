@@ -47,25 +47,25 @@ const PostCard = ({ post }) => {
         dispatch(unsavePostAction(data))
     }
     const handleOpenCommentModel = () => {
-        navigate(`/comment/${post}`)
+        navigate(`/comment/${post.postId}`)
         onOpen();
     }
 
     useEffect(() => {
         setIsPostLike(isPostLikedByUser(post, user.reqUser?.userId))
-        setIsSaved(isSavedPost(user.reqUser,post.postId))
+        setIsSaved(isSavedPost(user?.reqUser,post.postId))
 
-    }, [post, user.reqUser])
-
+    }, [post.likes, user?.reqUser])
+console.log("uuuu", user?.reqUser);
     return (
         <div>
-            <div className='rounded-md'>
+            <div className='rounded-md border-b'>
                 <div className='flex justify-between items-center py-4'>
                     <div className='flex items-center'>
-                        <img className='h-12 w-12 rounded-full' src='https://thewowstyle.com/wp-content/uploads/2015/01/nature-wallpaper-27.jpg' alt='' />
+                        <img className='h-12 w-12 rounded-full' src={user?.reqUser.userImage || "https://static.vecteezy.com/system/resources/previews/018/765/757/original/user-profile-icon-in-flat-style-member-avatar-illustration-on-isolated-background-human-permission-sign-business-concept-vector.jpg"} alt='' />
                         <div className='pl-2'>
-                            <p className='font-semibold text-sm'>username</p>
-                            <p className='font-thin text-sm'>Location</p>
+                            <p className='font-semibold text-sm'>{post?.user.username}</p>
+                            <p className='font-thin text-sm'>{post?.location}</p>
                         </div>
                     </div>
                     <div className='dropdown text-2xl'>
@@ -115,14 +115,14 @@ const PostCard = ({ post }) => {
 
                     </div>
                     <div className=' flex space-x-2'>
-                        <p className='font-semibold'>username </p>
-                        <p>Serene</p>
+                        <p className='font-semibold'>{post?.user.username} </p>
+                        <p>{post?.caption}</p>
 
                     </div>
                     <div>
                         {post.comments?.length > 0 && <p className='text-gray-500'>View all {post.comments?.length} comment </p>}
                     </div>
-                    <div className='border-b pb-2'>
+                    <div className='border-b pb-2 mt-4'>
                         <div className='w-full'>
                             <input className='commentInput' type='text' placeholder='Add a comment..' />
                         </div>

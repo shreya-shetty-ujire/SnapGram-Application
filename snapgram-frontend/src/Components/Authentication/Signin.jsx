@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import nameImage from '../../assets/images/name.png'
 import { Box, Button, FormControl, FormErrorMessage, Input } from '@chakra-ui/react'
 import { Field, Form, Formik } from 'formik'
@@ -18,26 +18,29 @@ const Signin = () => {
   const initialValues = { username: "", password: "" }
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const {user} =useSelector(store=>store);
-  const token= localStorage.getItem("jwtToken");
+  const { user } = useSelector(store => store);
+  const token = localStorage.getItem("jwtToken");
+  const [username, setUsername] = useState("");
 
   const handleSubmit = (values, actions) => {
-    dispatch(signinAction(values))
+    setUsername(values.username); 
+    dispatch(signinAction(values, actions.setErrors));
     actions.setSubmitting(false);
   }
 
-  useEffect(()=>{
+  useEffect(() => {
 
-    if(user?.reqUser?.username){
+    if (user?.reqUser?.username) {
       navigate("/dashboard")
     }
-  },[token, user.reqUser])
+  }, [token, user.reqUser])
 
-  useEffect(()=>{
-    if(token){
-      dispatch(getUserProfileAction(token));
+  useEffect(() => {
+    if (token && username) {
+       dispatch(getUserProfileAction(token, username));
+      // dispatch(getUserProfileAction(token, user.reqUser?.username));
     }
-    
+
   }, [token])
 
   const handleNavigate = () => navigate("/signup")
@@ -66,6 +69,7 @@ const Signin = () => {
 
             {(formikProps) =>
               <Form className="w-full space-y-6">
+
                 <Field name="username">
                   {({ field, form }) => (<FormControl isInvalid={form.errors.username && form.touched.username}>
 
@@ -92,6 +96,9 @@ const Signin = () => {
                       <FormErrorMessage>{form.errors.password}</FormErrorMessage>
                     </FormControl>)}
                 </Field>
+                {formikProps.errors.serverError && (
+                  <div className="text-red-500 mb-4">{formikProps.errors.serverError}</div>
+                )}
                 <Button type="submit" className="w-full" mt={4} colorScheme='blue' isLoading={formikProps.isSubmitting}>Login</Button>
 
 

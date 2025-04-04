@@ -7,18 +7,20 @@ import { IoReorderThreeOutline } from "react-icons/io5";
 import CreatePostModal from '../Posts/CreatePostModal';
 import { useDisclosure } from '@chakra-ui/react';
 import SearchComponent from '../SearchComponent/SearchComponent';
+import { useSelector } from 'react-redux';
 
 const Sidebar = () => {
     const [activeTab, setActiveTab] = useState();
     const navigate = useNavigate();
     const { isOpen, onClose, onOpen } = useDisclosure();
     const [isSearchVisible, setIsSearchVisible] = useState(false);
+    const {user} = useSelector(store=>store)
 
     const handleTabClick = (title) => {
         setActiveTab(title);
 
         if (title === "Profile") {
-            navigate("/username");
+            navigate(`/${user?.reqUser?.username}`);
         }
         else if (title === "Home") {
             navigate("/dashboard");
@@ -42,7 +44,7 @@ const Sidebar = () => {
             <div className={`flex flex-col justify-between h-full ${activeTab === "Search" ? "px-8 pt-14" : "px-10"}`}>
                 <div>
                     {!isSearchVisible ? (
-                        <div className="w-[9.5rem] pt-10 mb-6">
+                        <div className="w-[12rem] pt-16 mb-6">
                             <img src={nameImage} alt="Snapgram Logo" />
                         </div>
                     ) : (

@@ -11,7 +11,8 @@ const initialValue = {
     savedPost: null,
     unsavedPost: null,
     singlePost: null,
-    reqUserPost: null
+    reqUserPost: null,
+    profilePost: null
 };
 
 export const PostReducer = (store = initialValue, { type, payload }) => {

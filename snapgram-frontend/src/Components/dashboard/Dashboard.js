@@ -5,6 +5,8 @@ import PostCard from '../Posts/PostCard';
 import { useDisclosure } from '@chakra-ui/react';
 import { useDispatch, useSelector } from 'react-redux';
 import { findUserPostAction } from '../../Redux/Post/Action';
+import { useNavigate } from 'react-router-dom';
+import { getPopularUser } from '../../Redux/User/userActions';
 
 
 const Dashboard = () => {
@@ -13,13 +15,16 @@ const Dashboard = () => {
     const {user, post} = useSelector((store) =>store)
 
     const dispatch= useDispatch();
+    const navigate= useNavigate();
     const token = localStorage.getItem("jwtToken")
 
 
     // get list of following user ids
+    
     useEffect(()=>{
         if (user && user.reqUser) {
-        const newIds = user.reqUser?.following || []; 
+        const newIds = user.reqUser?.following?.map(followingUser => followingUser.userId) || []; 
+        console.log("following posts:", newIds)
             setUserIds([user.reqUser?.userId, ...newIds]); 
         }
     }, [user.reqUser]);
@@ -31,14 +36,13 @@ const Dashboard = () => {
               userIds: userIds.join(","),
             };
             dispatch(findUserPostAction(data));
+            dispatch(getPopularUser(token));
           }
-    }, [userIds, post.createdPost, post.deletedPost, user.reqUser]);
-
-    console.log("POstss:",post)
+    }, [userIds, post.createdPost, post.deletedPost]);
 
     return (
         <div>
-            <div className='flex justify-center w-full pl-8'>
+            <div className='flex justify-center w-full pl-8 mt-6'>
                 <div className="flex justify-between w-[90%]">
 
                     <div className="w-[40%] px-6 ml-28">
@@ -47,7 +51,7 @@ const Dashboard = () => {
                             post.usersPost.map((item) => (<PostCard post={item}/>))}
                         </div>
                     </div>
-                    <div className='w-[43%] pr-52'>
+                    <div className='w-[43%] pr-52 mt-2'>
                         <HomeRight />
                     </div>
                 </div>
