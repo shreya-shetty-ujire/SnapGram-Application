@@ -1,6 +1,7 @@
 package com.snapgram.backend.repository;
 
 import com.snapgram.backend.model.User;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -22,4 +23,17 @@ public interface UserRepository extends JpaRepository<User, Integer> {
     // Search users
     @Query("SELECT DISTINCT u FROM User u WHERE u.username LIKE %:queryParam% OR u.email LIKE %:queryParam% OR u.name LIKE %:queryParam%")
     List<User> findByQuery(@Param("queryParam") String query);
+
+    @Query("""
+    SELECT u FROM User u 
+    WHERE u.userId <> :currentUserId 
+      AND u.userId NOT IN (
+          SELECT followed.userId 
+          FROM User u2 
+          JOIN u2.following followed 
+          WHERE u2.userId = :currentUserId
+      )
+    ORDER BY size(u.followers) DESC
+""")
+    List<User> findTopUsersByFollowers(@Param("currentUserId") Integer currentUserId, Pageable pageable);
 }

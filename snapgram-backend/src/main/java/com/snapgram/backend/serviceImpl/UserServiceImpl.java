@@ -14,6 +14,8 @@ import jakarta.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -173,6 +175,7 @@ public class UserServiceImpl implements UserService {
         token=token.substring(7); //Bearer
         logger.info(token);
         logger.info("Sending requested user details: "+username);
+
         return userRepository.findByUsername(username)
                 .orElseThrow(() -> new UserNotFoundException("User with username " + username + " not found"));
     }
@@ -259,5 +262,10 @@ public class UserServiceImpl implements UserService {
             return new UserNotFoundException("User not found with ID: " + existingUser.getUserId());
         });
     }
+    public List<User> getPopularUsers(Integer userId, int limit) {
+        Pageable top = PageRequest.of(0, limit);
+        return userRepository.findTopUsersByFollowers(userId, top);
+    }
+
 
 }

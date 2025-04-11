@@ -26,4 +26,5 @@ public interface UserService {
 
     Map <String, Object> updateUser(User updatedUser, User existingUser);
     boolean passwordMatches(String password, String encodedPassword);
+    List<User> getPopularUsers(Integer userId, int limit);
 }

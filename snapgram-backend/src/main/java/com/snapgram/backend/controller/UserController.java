@@ -47,6 +47,7 @@ public class UserController {
     @GetMapping("/get/{username}")
     public ResponseEntity<User> findUserByUsernameHandler(@PathVariable String username){
         User user=userService.findUserByUsername(username);
+
         return new ResponseEntity <>(user,HttpStatus.OK);
     }
 
@@ -101,4 +102,11 @@ public class UserController {
     public ResponseEntity<String> getProtectedData() {
         return ResponseEntity.ok("You have accessed a protected resource!");
     }
+    @GetMapping("/popular")
+    public ResponseEntity<List<User>> getPopularUsers(@RequestHeader("Authorization") String token) {
+        User user=userService.findUserProfile(token);
+        List<User> popularUsers = userService.getPopularUsers(user.getUserId(), 5);
+        return ResponseEntity.ok(popularUsers);
+    }
+
 }

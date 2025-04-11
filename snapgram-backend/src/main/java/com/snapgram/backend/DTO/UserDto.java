@@ -1,11 +1,7 @@
 package com.snapgram.backend.DTO;
 
 
-import java.util.List;
-import java.util.Set;
 
-import com.snapgram.backend.model.Post;
-import com.snapgram.backend.model.User;
 import jakarta.persistence.Embeddable;
 import jakarta.validation.constraints.*;
 

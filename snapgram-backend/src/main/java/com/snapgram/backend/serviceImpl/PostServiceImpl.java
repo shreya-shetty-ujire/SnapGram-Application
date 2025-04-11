@@ -111,8 +111,10 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public Post likePost(Integer postId, Integer userId) throws UserException, PostException {
+
         Post post = getPostById(postId);
         User user=userService.findUserById(userId);
+        logger.info("liking the post by:", user.getUsername());
         UserDto userDto= new UserDto();
 
         userDto.setEmail(user.getEmail());
