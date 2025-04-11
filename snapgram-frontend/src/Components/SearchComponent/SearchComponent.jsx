@@ -3,17 +3,17 @@ import './SearchComponent.css'
 import SearchUserCard from './SearchUserCard'
 import { useDispatch, useSelector } from 'react-redux';
 import { searchUserAction } from '../../Redux/User/userActions';
-const SearchComponent = () => {
-      const token=localStorage.getItem("jwtToken");
-      const {user} = useSelector((store) => store);
-      const dispatch= useDispatch();
+const SearchComponent = ({ onCloseSearch }) => {
+  const token = localStorage.getItem("jwtToken");
+  const { user } = useSelector((store) => store);
+  const dispatch = useDispatch();
 
 
-    const handleSearch=(e)=>{
-      dispatch(searchUserAction({
-        jwt: token, query: e.target.value
-      }))
-    }
+  const handleSearch = (e) => {
+    dispatch(searchUserAction({
+      jwt: token, query: e.target.value
+    }))
+  }
 
   return (
     <div className='searchContainer shadow-2xl'>
@@ -24,8 +24,9 @@ const SearchComponent = () => {
         </div>
         <hr />
         <div className='pt-5 px-3'>
+
           {user?.searchUser?.map((item) =>
-            <SearchUserCard user={item}/>
+            <SearchUserCard key={item.userId} user={item} onSelectUser={onCloseSearch} />
           )}
         </div>
       </div>

@@ -5,7 +5,7 @@ import UserPostCard from './UserPostCard';
 import { useDispatch, useSelector } from 'react-redux';
 import { reqUserPostAction } from '../../Redux/Post/Action';
 
-const UserMedia = ({user}) => {
+const UserMedia = ({ user }) => {
     const [isActive, setIsActive] = useState('POSTS');
     const dispatch = useDispatch();
     const token = localStorage.getItem("jwtToken");
@@ -29,13 +29,13 @@ const UserMedia = ({user}) => {
         }
     ]
     useEffect(() => {
-        if(user && user.userId){
+        if (user && user.userId) {
             const data = {
                 jwt: token, userId: user?.userId
             }
             dispatch(reqUserPostAction(data))
         }
-        
+
     }, [user, post.createdPost]);
     return (
         <div>
@@ -49,9 +49,9 @@ const UserMedia = ({user}) => {
                 )}
             </div>
             <div className='relative justify-center mt-4 ml-[10rem] grid grid-cols-3'>
-            {isActive === 'POSTS' ?
-  post?.reqUserPost?.map((item) => <UserPostCard post={item} />
-  ): user?.savedPost?.map((item)=> <UserPostCard post={item}/>)}
+                {isActive === 'POSTS' ?
+                    post?.reqUserPost?.map((item) => <UserPostCard post={item} />
+                    ) : user?.savedPosts?.map((item) => <UserPostCard post={item} />)}
 
             </div>
         </div>

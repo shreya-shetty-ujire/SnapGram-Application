@@ -1,16 +1,15 @@
 import { SIGN_IN } from "../Auth/ActionType";
-import { DELETE_USER, FOLLOW_USER, GET_USER_BY_USERNAME, GET_USERS_BY_USER_IDS, POPULAR_USER, REQ_USER, SEARCH_USER, UNFOLLOW_USER, UPDATE_USER } from "./ActionType";
+import { DELETE_USER, FOLLOW_USER, GET_USER_BY_USERNAME, GET_USERS_BY_USER_IDS, POPULAR_USER, REMOVE_FROM_POPULAR, REQ_USER, SEARCH_USER, UNFOLLOW_USER, UPDATE_USER } from "./ActionType";
 
 const BASE_API = "http://localhost:8080"
 
-export const getUserProfileAction = (token,username) => async (dispatch) => {
-  console.log("getting profile info", username)
+export const getUserProfileAction = (token, username) => async (dispatch) => {
   try {
     const res = await fetch(`${BASE_API}/user/reqProfile?username=${username}`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
-        Authorization: "Bearer "+token
+        Authorization: "Bearer " + token
       }
     })
 
@@ -18,7 +17,7 @@ export const getUserProfileAction = (token,username) => async (dispatch) => {
     const reqUser = await res.json();
     console.log("Response from profile API:", reqUser);
     dispatch({ type: REQ_USER, payload: reqUser });
-  } catch(error){
+  } catch (error) {
     console.log("Catch error", error)
   }
 }
@@ -87,7 +86,7 @@ export const unfollowUserAction = (data) => async (dispatch) => {
 }
 
 export const searchUserAction = (data) => async (dispatch) => {
-console.log("qq",data)
+  console.log("qq", data)
   try {
     const res = await fetch(`${BASE_API}/user/search?userId=${data.query}`, {
       method: "GET",
@@ -100,7 +99,7 @@ console.log("qq",data)
     const user = await res.json();
     console.log("Search User: ", user)
     dispatch({ type: SEARCH_USER, payload: user });
-  } catch(error){
+  } catch (error) {
     console.log("Catch error", error)
   }
 
@@ -128,17 +127,17 @@ export const editUserAction = (data) => async (dispatch) => {
     const newToken = res.headers.get("Authorization");
 
     if (newToken) {
-      localStorage.setItem("jwtToken", newToken); 
-      dispatch({ type: SIGN_IN, payload: newToken }); 
+      localStorage.setItem("jwtToken", newToken);
+      dispatch({ type: SIGN_IN, payload: newToken });
     }
     dispatch({ type: UPDATE_USER, payload: user });
 
     await dispatch(getUserProfileAction(newToken || data.jwt, user.username));
-    
-    return user; 
+
+    return user;
   } catch (error) {
     console.log("Catch error", error);
-    throw error; 
+    throw error;
   }
 };
 
@@ -158,7 +157,7 @@ export const deleteUserAction = (data) => async (dispatch) => {
     console.log("Deleted User: ", result)
     dispatch({ type: DELETE_USER, payload: result });
 
-  } catch(error){
+  } catch (error) {
     console.log("Catch error", error)
   }
 
@@ -179,7 +178,7 @@ export const getPopularUser = (jwt) => async (dispatch) => {
     console.log("Popular Users: ", result)
     dispatch({ type: POPULAR_USER, payload: result });
 
-  } catch(error){
+  } catch (error) {
     console.log("Catch error", error)
   }
 

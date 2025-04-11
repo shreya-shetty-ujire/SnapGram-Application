@@ -19,26 +19,24 @@ const Dashboard = () => {
     const token = localStorage.getItem("jwtToken")
 
 
-    // get list of following user ids
     
-    useEffect(()=>{
+    useEffect(() => {
         if (user && user.reqUser) {
-        const newIds = user.reqUser?.following?.map(followingUser => followingUser.userId) || []; 
-        console.log("following posts:", newIds)
-            setUserIds([user.reqUser?.userId, ...newIds]); 
+          const newIds = user.reqUser.following?.map(followingUser => followingUser.userId) || []; 
+          setUserIds([user.reqUser.userId, ...newIds]); 
         }
-    }, [user.reqUser]);
-
-    useEffect(()=>{
+      }, [user.reqUser]);
+      
+      useEffect(() => {
         if (user.reqUser && userIds && userIds.length > 0) {
-            const data = {
-              jwt: token,
-              userIds: userIds.join(","),
-            };
-            dispatch(findUserPostAction(data));
-            dispatch(getPopularUser(token));
-          }
-    }, [userIds, post.createdPost, post.deletedPost]);
+          const data = {
+            jwt: token,
+            userIds: userIds.join(","),
+          };
+          dispatch(findUserPostAction(data));
+          dispatch(getPopularUser(token));
+        }
+      }, [userIds, post.createdPost, post.deletedPost]);
 
     return (
         <div>

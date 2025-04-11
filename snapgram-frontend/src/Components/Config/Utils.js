@@ -4,7 +4,7 @@ export const isPostLikedByUser=(post, userId)=>{
         return false;
     }
     for(let item of post.likes){
-        if(item===userId)
+        if(item.userId===userId)
             return true;
     }
     return false;
@@ -19,7 +19,7 @@ export const isCommentLikedByUser=(comment, userId)=>{
 }
 
 export const isSavedPost = (user, postId) => {
-    return Array.isArray(user?.savedPosts) && user.savedPosts.includes(postId);
+    return Array.isArray(user?.reqUser?.savedPosts) && user.reqUser.savedPosts.some(post => post.postId === postId);
 };
 
 export const timeDifference=(timestamp)=>{

@@ -7,29 +7,29 @@ import { findUserByUsernameAction, getUserProfileAction } from '../../Redux/User
 import { isFollowing, isReqUser } from '../Config/Utils'
 
 const Profile = () => {
-    const dispatch= useDispatch();
-    const token=localStorage.getItem("jwtToken");
-    const {username} = useParams();
-    const {user} = useSelector((store) => store);
+    const dispatch = useDispatch();
+    const token = localStorage.getItem("jwtToken");
+    const { username } = useParams();
+    const { user } = useSelector((store) => store);
 
-    const isRequser=isReqUser(user.reqUser?.userId, user.findByUsername?.userId);
-    const isFollowed=isFollowing(user.reqUser, user.findByUsername);
+    const isRequser = isReqUser(user.reqUser?.userId, user.findByUsername?.userId);
+    const isFollowed = isFollowing(user.reqUser, user.findByUsername);
     useEffect(() => {
-        if (username) { 
+        if (username) {
             const data = { jwt: token, username };
             dispatch(getUserProfileAction(token, username));
             dispatch(findUserByUsernameAction(data));
         }
-    }, [username, user.follower, user.following]); // Keep dependency minimal
-    
+    }, [username, user.follower, user.following]);
+
 
     return (
         <div className="px-20 w-full pr-80">
             <div>
-                <UserData user={isRequser ? user.reqUser: user.findByUsername} isFollowing={isFollowed} isReqUser={isRequser}/>
+                <UserData user={isRequser ? user.reqUser : user.findByUsername} isFollowing={isFollowed} isReqUser={isRequser} />
             </div>
             <div>
-                <UserMedia user={isRequser ? user.reqUser: user.findByUsername}/>
+                <UserMedia user={isRequser ? user.reqUser : user.findByUsername} />
             </div>
         </div>
 

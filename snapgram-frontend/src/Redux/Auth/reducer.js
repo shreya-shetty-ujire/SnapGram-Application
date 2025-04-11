@@ -1,4 +1,4 @@
-import { LOGOUT, SIGN_IN, SIGN_UP } from "./ActionType";
+import { LOGOUT, RESET_SIGNUP, SIGN_IN, SIGN_UP } from "./ActionType";
 
 const initialValue={
     signup:null,
@@ -19,6 +19,11 @@ export const AuthReducer = (store = initialValue, { type, payload }) => {
             signin: null,
             isAuthenticated: false,
         };
+    }else if (type === RESET_SIGNUP) {
+        return {
+            ...store,
+            signup: null
+          };
     }
     return store;
 }

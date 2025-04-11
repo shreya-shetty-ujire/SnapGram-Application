@@ -5,7 +5,7 @@ import { Field, Form, Formik } from 'formik';
 import { object, string } from 'yup';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux'
-import { signupAction } from '../../Redux/Auth/Actions'
+import { resetSignup, signupAction } from '../../Redux/Auth/Actions'
 const validationSchema = object().shape({
   username: string().required('Username is required'),
   email: string().email('Email is invalid').required('Email is required'),
@@ -33,9 +33,12 @@ const SignUp = () => {
     dispatch(signupAction(values))
     actions.setSubmitting(false)
   };
+  useEffect(() => {
+    dispatch(resetSignup());
+  }, []); 
 
   useEffect(()=>{
-    if(auth.signup?.username){
+    if (auth.signup?.username) {
       navigate('/login')
       toast({
         title: `Account Created ${auth.signup?.username}`,
@@ -45,7 +48,7 @@ const SignUp = () => {
       })
     }
 
-  },auth.signup?.username)
+  })
 
   return (
     <div className="flex flex-col justify-center items-center min-h-screen">

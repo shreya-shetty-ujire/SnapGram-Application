@@ -39,7 +39,6 @@ const EditAccount = () => {
     website: "",
     private: false,
   });
-console.log("User data:", user)
   useEffect(() => {
     if (token) {
       dispatch(getUserProfileAction(token,  user?.reqUser?.username));
@@ -75,7 +74,7 @@ console.log("User data:", user)
         jwt: token,
         data: { ...values, userId: user.reqUser?.userId },
       };
-      console.log("user being updated: ",data);
+      
       dispatch(editUserAction(data))
       .then(() => {
         dispatch(getUserProfileAction(token, values.username));
@@ -147,7 +146,6 @@ console.log("User data:", user)
 
   return (
     <div className="border rounded-md p-10 px-32">
-      {/* Profile Image Section */}
       <div className="flex pb-7 items-center">
         <div className="w-[15%]">
           <img
@@ -168,7 +166,6 @@ console.log("User data:", user)
         </div>
       </div>
 
-      {/* Form */}
       <form onSubmit={formik.handleSubmit}>
         <Stack spacing="6">
           {/* Name */}

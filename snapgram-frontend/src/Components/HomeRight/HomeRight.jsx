@@ -6,7 +6,7 @@ const HomeRight = () => {
   const {user, post} = useSelector((store) =>store)
 
     const token = localStorage.getItem("jwtToken")
-
+    console.log("Popular:", user?.popularUsers)
   return (
     <div>
       
@@ -33,12 +33,15 @@ const HomeRight = () => {
       </div>
       <div className='flex justify-between w-full items-center pr-6 pl-4'>
         <p className='text-gray-400 font-semibold text-sm'>Suggested For you</p>
-        {/* <p className='text-sm font-bold'>See All</p> */}
+        
       </div>
       
-        {user?.popularUsers?.map((item) => <SuggestionCard user={item}/>)}
+      {Array.isArray(user?.popularUsers) && user?.popularUsers.length > 0 ? (
+        user?.popularUsers.map((item) => <SuggestionCard user={item} key={item.id} />)
+      ) : (
+        <p className='pl-4 mt-3'>No suggestions available</p> 
+      )}
       
-
     </div>
   )
 }

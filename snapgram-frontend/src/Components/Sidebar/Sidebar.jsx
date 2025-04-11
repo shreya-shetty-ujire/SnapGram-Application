@@ -1,22 +1,24 @@
 import React, { useState } from 'react';
-import { FaHome, FaSearch, FaPlusCircle, FaBell, FaUserCircle, FaSignOutAlt } from 'react-icons/fa';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import nameImage from '../../assets/images/name.png';
 import { menuItems } from './menuItems';
 import { IoReorderThreeOutline } from "react-icons/io5";
 import CreatePostModal from '../Posts/CreatePostModal';
 import { useDisclosure } from '@chakra-ui/react';
 import SearchComponent from '../SearchComponent/SearchComponent';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { LOGOUT } from '../../Redux/Auth/ActionType';
 
 const Sidebar = () => {
     const [activeTab, setActiveTab] = useState();
     const navigate = useNavigate();
     const { isOpen, onClose, onOpen } = useDisclosure();
     const [isSearchVisible, setIsSearchVisible] = useState(false);
-    const {user} = useSelector(store=>store)
+    const { user } = useSelector(store => store)
+    const dispatch = useDispatch();
 
     const handleTabClick = (title) => {
+
         setActiveTab(title);
 
         if (title === "Profile") {
@@ -26,6 +28,7 @@ const Sidebar = () => {
             navigate("/dashboard");
         }
         else if (title === "Logout") {
+            dispatch({ type: LOGOUT });
             localStorage.removeItem('jwtToken');
             navigate("/login");
         }
@@ -55,7 +58,7 @@ const Sidebar = () => {
                     <div className="mt-10">
                         {menuItems.map((item, index) => (
                             <div
-                                key={index} // Add a unique key for each item
+                                key={index} 
                                 onClick={() => handleTabClick(item.title)}
                                 className={`flex items-center mb-6 cursor-pointer text-lg`}
                             >
@@ -78,10 +81,11 @@ const Sidebar = () => {
                 )}
             </div>
 
-            {/* Create Post Modal */}
             <CreatePostModal onClose={onClose} isOpen={isOpen} />
 
-            {isSearchVisible && <SearchComponent />}
+
+            {isSearchVisible && <SearchComponent onCloseSearch={() => setIsSearchVisible(false)} />}
+
         </div>
     );
 };

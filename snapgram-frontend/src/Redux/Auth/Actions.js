@@ -1,6 +1,6 @@
 
 
-const { SIGN_IN, SIGN_UP, LOGOUT } = require("./ActionType");
+const { SIGN_IN, SIGN_UP, LOGOUT, RESET_SIGNUP } = require("./ActionType");
 
 export const signinAction = (data, setErrors) => async (dispatch) => {
     try {
@@ -47,3 +47,7 @@ export const signupAction = (data) => async (dispatch) => {
         console.log(error)
     }
 }
+
+export const resetSignup = () => ({
+    type: RESET_SIGNUP
+  });

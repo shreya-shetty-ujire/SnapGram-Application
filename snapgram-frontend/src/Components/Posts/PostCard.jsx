@@ -16,8 +16,8 @@ import { useNavigate } from 'react-router-dom';
 
 const PostCard = ({ post }) => {
     const [showDropDown, setShowDropDown] = useState(false);
-    const [isPostLike, setIsPostLike] = useState(false);
-    const [isSaved, setIsSaved] = useState(false);
+    const [liked, setLiked] = useState(null);
+    const [saved, setSaved] = useState(null);
     const { isOpen, onOpen, onClose } = useDisclosure();
     const dispatch = useDispatch();
 
@@ -25,38 +25,46 @@ const PostCard = ({ post }) => {
     const token = localStorage.getItem("jwtToken");
 
     const data = { jwt: token, postId: post?.postId }
-    const navigate=useNavigate();
+    const navigate = useNavigate();
     const handleClick = () => {
         setShowDropDown(!showDropDown);
     }
-    const handlePostLike = () => {
-        setIsPostLike(true);
-        dispatch(likePostAction(data))
-    }
-    const handlePostUnLike = () => {
-        setIsPostLike(false);
-        dispatch(unlikePostAction(data))
-    }
-    const handleSavePost = () => {
-        setIsSaved(true);
-        dispatch(savePostAction(data))
+    useEffect(() => {
+        if (user?.reqUser) {
+            const isLikedByUser = post.likes?.some(like => like.userId === user.reqUser?.userId);
+            setLiked(isLikedByUser);
 
-    }
+            const isSavedByUser = user.reqUser.savedPosts?.some(savedPost => savedPost.postId === post?.postId);
+            setSaved(isSavedByUser);
+        }
+    }, [user, post.likes, post?.postId, user?.reqUser.savedPosts]);
+
+
+    const handlePostLike = () => {
+        setLiked(true);
+        dispatch(likePostAction({ jwt: token, postId: post?.postId }));
+    };
+
+    const handlePostUnLike = () => {
+        setLiked(false);
+        dispatch(unlikePostAction({ jwt: token, postId: post?.postId }));
+    };
+
+    const handleSavePost = () => {
+        setSaved(true);
+        dispatch(savePostAction({ jwt: token, postId: post?.postId }));
+    };
+
     const handleUnSavePost = () => {
-        setIsSaved(false);
-        dispatch(unsavePostAction(data))
-    }
+        setSaved(false);
+        dispatch(unsavePostAction({ jwt: token, postId: post?.postId }));
+    };
+
     const handleOpenCommentModel = () => {
         navigate(`/comment/${post.postId}`)
         onOpen();
     }
 
-    useEffect(() => {
-        setIsPostLike(isPostLikedByUser(post, user.reqUser?.userId))
-        setIsSaved(isSavedPost(user?.reqUser,post.postId))
-
-    }, [post.likes, user?.reqUser])
-console.log("uuuu", user?.reqUser);
     return (
         <div>
             <div className='rounded-md border-b'>
@@ -83,7 +91,7 @@ console.log("uuuu", user?.reqUser);
 
                 <div className='flex justify-between items-center w-full py-4'>
                     <div className="flex items-center space-x-6">
-                        {isPostLike ? (
+                        {liked ? (
                             <AiFillHeart
                                 className="text-3xl cursor-pointer hover:opacity-50 text-red-600"
                                 onClick={handlePostUnLike}
@@ -96,14 +104,14 @@ console.log("uuuu", user?.reqUser);
                         )}
 
 
-                        <FaRegComment 
-                        onClick={handleOpenCommentModel} 
-                        className=" text-2xl cursor-pointer hover:opacity-50" />
+                        <FaRegComment
+                            onClick={handleOpenCommentModel}
+                            className=" text-2xl cursor-pointer hover:opacity-50" />
                         <RiSendPlaneLine className=" text-2xl cursor-pointer hover:opacity-50" />
 
                     </div>
                     <div className='text-2xl cursor-pointer hover:opacity-50'>
-                        {isSaved ? <BsBookmarkFill className='text-2xl cursor-pointer hover:opacity-50'
+                        {saved ? <BsBookmarkFill className='text-2xl cursor-pointer hover:opacity-50'
                             onClick={handleUnSavePost} /> :
                             <BsBookmark onClick={handleSavePost} />}
                     </div>
@@ -133,8 +141,8 @@ console.log("uuuu", user?.reqUser);
             <CommentModel
                 onClose={onClose}
                 isOpen={isOpen}
-                isPostLike={isPostLike}
-                isSaved={isSaved}
+                isPostLike={liked}
+                isSaved={saved}
                 handlePostClick={handlePostLike}
                 handleIsSaved={handleSavePost}
             />
