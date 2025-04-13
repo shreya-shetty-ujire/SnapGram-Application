@@ -1,7 +1,3 @@
-# Getting Started with Create React App
-
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
-
 ## Available Scripts
 
 In the project directory, you can run:
@@ -14,57 +10,44 @@ Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
 The page will reload when you make changes.\
 You may also see any lint errors in the console.
 
-### `npm test`
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+# Snapgram Frontend Features
 
-### `npm run build`
+## Features
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+### Authentication Pages:
+- **Login**: Page where users can enter their username and password to authenticate.
+- **Signup**: Page for new users to create an account by providing username, email, and password.
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+### Profile Management:
+- **User Profile Page**: Displays user’s profile information, including username, bio, profile picture, and follower and following count.
+- **Edit Profile**: Users can edit their profile details, such as bio, profile picture, and update account information.
+- **View User's Posts and Saved Posts**: Display posts and comments made by the user, allowing easy navigation and interaction.
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+### Content Interaction:
+- **Post Creation**: Interface for users to create and share posts with text, images, or videos.
+- **View Posts**: Feed displaying posts from followed users, with the ability to like, comment, and share.
+- **Like and Unlike Posts**: Enable users to like and unlike posts, with a real-time update on the like count.
+- **Comment on Posts**: Users can add, edit, and delete comments on posts. Comments should appear below the corresponding post.
 
-### `npm run eject`
+### Social Features:
+- **Follow/Unfollow Users**: 
+  - Buttons to follow or unfollow users directly from their profile or in the user feed.
+  - Real-time follow/unfollow updates.
+- **Search Users**: 
+  - A search bar where users can search for other users by their username.
+  - Display user profile suggestions based on search results.
+- **Popular Users**: Display a list of popular users based on certain metrics like followers count or activity.
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+### UI Components:
+- **Modal Popups**: For creating posts, editing profiles, or confirming actions like follow/unfollow or deleting comments.
+- **User Lists**: Display a list of followers, following, and user suggestions.
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+### Authentication:
+- **JWT Token Handling**: Store JWT token securely in the frontend (localStorage/sessionStorage or cookies) for authenticated requests.
+- **Token Management**: Attach JWT tokens to API requests in the `Authorization` header for protected endpoints.
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+### Error Handling:
+- **Error Display**: Show error messages for failed actions (e.g., incorrect credentials, network errors, unauthorized access).
+- **Form Validation**: Frontend validation for input fields, including username, email, password, etc.
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
